@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25">
+  <g id="그룹_31223" data-name="그룹 31223" transform="translate(-1436.708 -940.376)">
+    <g id="그룹_31224" data-name="그룹 31224" transform="translate(1436.709 940.376)">
+      <g id="사각형_7516" data-name="사각형 7516" transform="translate(0)" fill="rgba(94,26,34,0.56)" stroke="#ab3d23" stroke-width="1">
+        <rect width="25" height="25" rx="2" stroke="none"/>
+        <rect x="0.5" y="0.5" width="24" height="24" rx="1.5" fill="none"/>
+      </g>
+      <g id="그룹_30844" data-name="그룹 30844" transform="translate(5.802 5.802)">
+        <path id="free-icon-fullscreen-5143385_1_" data-name="free-icon-fullscreen-5143385 (1)" d="M5.618,5A.618.618,0,0,0,5,5.618V9.327a.618.618,0,0,0,1.236,0V6.236H9.327A.618.618,0,0,0,9.327,5ZM17.981,5a.618.618,0,0,1,.618.618V9.327a.618.618,0,0,1-1.236,0V6.236H14.272a.618.618,0,0,1,0-1.236ZM18.6,17.981a.618.618,0,0,1-.618.618H14.272a.618.618,0,0,1,0-1.236h3.091V14.272a.618.618,0,0,1,1.236,0ZM5.618,18.6A.618.618,0,0,1,5,17.981V14.272a.618.618,0,0,1,1.236,0v3.091H9.327a.618.618,0,0,1,0,1.236Z" transform="translate(-5 -5)" fill="#fff" fill-rule="evenodd"/>
+      </g>
+    </g>
+  </g>
+</svg>

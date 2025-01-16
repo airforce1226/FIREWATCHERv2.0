@@ -1,0 +1,52 @@
+/* Tailwind CSS */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+	.card {
+		@apply p-5 border border-[#414243] rounded  text-[#e5eaf3] bg-[#1d1e1f];
+	}
+	.card-title {
+		@apply block mb-5 not-italic text-lg;
+	}
+	.backdrop-blur {
+		backdrop-filter: blur(4px);
+	}
+}
+
+/* Font & Reset */
+html,
+body {
+	font-size: 16px;
+}
+body {
+	min-width: 1904px;
+	max-width: 2240px;
+	overflow-x: none;
+	margin: auto;
+	color: #e5eaf3;
+}
+
+/* Scroll */
+::-webkit-scrollbar {
+	overflow: auto;
+	width: 6px;
+	height: 6px;
+}
+::-webkit-scrollbar-thumb {
+	background-color: #98353856;
+	border-radius: 10px;
+	background-clip: padding-box;
+}
+
+/* Primary Color */
+:root {
+	--el-color-primary: #cd4c54 !important;
+	--el-color-primary-light-3: #b25252 !important;
+	--el-color-primary-light-5: #854040 !important;
+	--el-color-primary-light-7: #582e2e !important;
+	--el-color-primary-light-8: #412626 !important;
+	--el-color-primary-light-9: #2b1d1d !important;
+	--el-color-primary-dark-2: #f78989 !important;
+}
