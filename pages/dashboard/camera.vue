@@ -1,7 +1,6 @@
 <template>
 	<div>
 		<div class="flex justify-start items-center">
-			<!-- <el-button @click="test()">test</el-button> -->
 			<div v-if="SITE === '강원도청'">
 				<img
 					v-if="isL2Login"
@@ -46,7 +45,7 @@
 										confirm-button-text="삭제"
 										cancel-button-text="취소"
 										:icon="WarnTriangleFilled"
-										title="정말 삭제하시겠습니까?"
+										:title="t('confirm_delete')"
 										@confirm="deleteAllCamera()"
 									>
 										<template #reference>
@@ -80,17 +79,17 @@
 								size="large"
 								@click="openModal('등록')"
 							>
-								CCTV 추가
+								{{ t('add_cctv') }}
 							</el-button>
 						</div>
 					</div>
 					<el-row
 						class="border bg-[#26272A] border-[#2F3031] rounded py-5 px-12 text-center mb-2.5"
 					>
-						<el-col :span="2">NO.</el-col>
-						<el-col :span="14">CCTV 명</el-col>
-						<el-col :span="6">주소</el-col>
-						<el-col :span="2">관리</el-col>
+						<el-col :span="1">NO.</el-col>
+						<el-col :span="13">CCTV 명</el-col>
+						<el-col :span="8">주소</el-col>
+						<el-col :span="2">{{ t('management') }}</el-col>
 					</el-row>
 					<div
 						class="h-[calc(100%-134.33px)] overflow-scroll relative scrollContainer"
@@ -101,18 +100,18 @@
 							:id="`camera${index}`"
 							@click="selectCamera(cctv)"
 						>
-							<el-col :span="2">{{ index + 1 }}</el-col>
-							<el-col :span="14" class="truncate">{{ cctv.cctv_name }}</el-col>
-							<el-col :span="6" class="text-[15px] truncate">{{
+							<el-col :span="1">{{ index + 1 }}</el-col>
+							<el-col :span="13" class="truncate">{{ cctv.cctv_name }}</el-col>
+							<el-col :span="8" class="text-[15px] truncate">{{
 								cctv.cctv_addressJoin
 							}}</el-col>
-							<el-col :span="2" class="flex justify-center">
+							<el-col :span="2" class="flex">
 								<el-popconfirm
-									width="200"
+									width="300"
 									confirm-button-text="삭제"
 									cancel-button-text="취소"
 									:icon="WarnTriangleFilled"
-									title="정말 삭제하시겠습니까?"
+									:title="t('confirm_delete')"
 									@confirm="deleteCamera(cctv)"
 								>
 									<template #reference>
@@ -148,7 +147,7 @@
 						:icon="Plus"
 						@click="setCenterZoom()"
 					>
-						지도 중심점 저장
+						{{ t('save_map_central_point') }}
 					</el-button>
 					<div class="bg-gray-600 h-full flex justify-center items-center">
 						<MapsMap2D
@@ -186,6 +185,9 @@ import {
 	DeleteFilled,
 	Bottom,
 } from '@element-plus/icons-vue';
+
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 
 const router = useRouter();
 const { message } = useAlarm();
@@ -277,7 +279,7 @@ const deleteCamera = async camera => {
 			method: 'GET',
 		});
 		fetchCCTVList();
-		message.success(`${camera.cctv_name}이 삭제되었습니다.`);
+		message.success(`${camera.cctv_name} ${t('deleted')}`);
 	} catch (error) {
 		console.log(error);
 	}
@@ -296,7 +298,7 @@ const deleteAllCamera = () => {
 			console.log(error);
 		}
 		if (cameraList.value.length - 1 === idx) {
-			message.success('전체 카메라가 삭제되었습니다.');
+			message.success(t('all_cameras_deleted'));
 			fetchCCTVList();
 		}
 	});
@@ -324,7 +326,7 @@ const initCameraSave = () => {
 	})
 		.then(res => {
 			if (temp === TEMP_CAMERA.length - 1) {
-				message.success(`카메라 초기화 완료.`);
+				message.success(t('camera_reset_complete'));
 				fetchCCTVList();
 			} else {
 				temp++;
@@ -392,13 +394,13 @@ const getCenterZoom = () => {
 				if (res._data.zoom) {
 					zoom.value = res._data.zoom;
 				}
-				message.success('지도 중심점 호출 완료');
+				message.success(t('map_central_point_retrieval_complete'));
 			} else if (res.status === 204) {
-				message.warning('등록된 중심점 없음');
+				message.warning('등록된 중심점이 없습니다.');
 			}
 		})
 		.catch(err => {
-			message.error('지도 중심점 호출 실패');
+			message.error(t('map_central_point_retrieval_failed'));
 		});
 };
 

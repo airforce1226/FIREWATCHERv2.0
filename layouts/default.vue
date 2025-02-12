@@ -29,7 +29,7 @@
 					<el-tooltip
 						v-if="isActive ? true : menu.name !== '계정 관리'"
 						effect="firewatcher"
-						:content="menu.name"
+						:content="t(menu.name)"
 					>
 						<img
 							:src="menu.isHover ? menu.active : menu.inactive"
@@ -47,9 +47,9 @@
 
 		<ModalsAlertModal
 			v-model="modal"
-			:content="'정말 로그아웃 하시겠습니까?'"
-			:ok="'로그아웃'"
-			:cancel="'닫기'"
+			:content="t('confirm_logout')"
+			:ok="'logout'"
+			:cancel="t('cancel')"
 			@confirm="logout()"
 		/>
 
@@ -69,6 +69,8 @@
 	</div>
 </template>
 <script setup>
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 const { message } = useAlarm();
 
 import menu01 from '@/assets/svgs/menu01.svg';
@@ -94,13 +96,13 @@ const isActive = ref(
 
 const menuList = ref([
 	{
-		name: 'CCTV 관리',
+		name: 'cctv_management',
 		inactive: menu01,
 		active: menu01A,
 		isHover: false,
 	},
 	{
-		name: '감지구역 설정',
+		name: 'configure_detection_zone',
 		inactive: menu02,
 		active: menu02A,
 		isHover: false,
@@ -136,7 +138,7 @@ const menuList = ref([
 		isHover: false,
 	}, */
 	{
-		name: '로그아웃',
+		name: 'logout',
 		inactive: menu08,
 		active: menu08A,
 		isHover: false,
@@ -152,18 +154,18 @@ const systemModal = defineModel('systemModal');
 const isLoading = ref(false);
 const menuHandle = async menuName => {
 	const menuMap = {
-		'CCTV 관리': '/dashboard/camera',
-		'감지구역 설정': '/dashboard/detection-area',
+		cctv_management: '/dashboard/camera',
+		configure_detection_zone: '/dashboard/detection-area',
 		'문자 알림 관리': '/dashboard/sms',
 		'계정 관리': '/dashboard/setting',
 		'필터 목록 관리': '/dashboard/filter',
 	};
-
-	if (menuName === '로그아웃') {
+	console.log(menuName);
+	if (menuName === 'logout') {
 		modal.value = true;
 	} else if (
-		menuName === '감지구역 설정' ||
-		menuName === 'CCTV 관리' ||
+		menuName === 'configure_detection_zone' ||
+		menuName === 'cctv_management' ||
 		menuName === '문자 알림 관리' ||
 		menuName === '필터 목록 관리' ||
 		menuName === '계정 관리'
@@ -174,7 +176,7 @@ const menuHandle = async menuName => {
 			await router.push(menuMap[menuName]);
 		} catch (error) {
 			console.error('Navigation error:', error);
-			message.error('페이지 로딩 중 오류가 발생했습니다.');
+			message.error(t('page_loading_error'));
 		} finally {
 			isLoading.value = false;
 		}

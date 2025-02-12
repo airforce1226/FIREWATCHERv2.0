@@ -30,6 +30,8 @@
 const modal = defineModel();
 const props = defineProps(['title', 'updateServerInfo']);
 const emit = defineEmits(['fetchServerList']);
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 
 const { message } = useAlarm();
 
@@ -70,7 +72,7 @@ const registerServer = async () => {
 				gpu_number: parseInt(gpu.value),
 			},
 		});
-		message.success(`${ip.value} 서버가 등록 되었습니다!`);
+		message.success(`${ip.value} ${t('server_registered')}`);
 		closeModal();
 		emit('fetchServerList');
 	} catch (error) {
@@ -100,7 +102,7 @@ const updateServer = async () => {
 				gpu_number: gpu.value,
 			},
 		});
-		message.success(`${ip.value}가 수정 되었습니다.`);
+		message.success(`${ip.value} 이(가) 수정 되었습니다.`);
 		closeModal();
 		emit('fetchServerList');
 	} catch (error) {

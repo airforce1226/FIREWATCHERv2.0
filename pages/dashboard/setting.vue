@@ -25,17 +25,17 @@
 
 		<div class="flex justify-end items-center mb-5">
 			<el-button :icon="Plus" type="primary" @click="openModal('등록')">
-				사용자 계정 추가
+				{{ t('add_user_account') }}
 			</el-button>
 		</div>
 		<el-row
 			class="bg-[#26272A] border border-[#2F3031] rounded py-5 px-14 text-center mb-2.5"
 		>
 			<el-col :span="4">NO</el-col>
-			<el-col :span="4">이름</el-col>
+			<el-col :span="4">{{ t('name') }}</el-col>
 			<el-col :span="4">ID</el-col>
-			<el-col :span="4">전화번호</el-col>
-			<el-col :span="4">Type</el-col>
+			<el-col :span="4">{{ t('phone_number') }}</el-col>
+			<el-col :span="4">{{ t('type') }}</el-col>
 			<el-col :span="4">삭제</el-col>
 		</el-row>
 		<div class="h-[calc(100%-205px)] overflow-y-scroll">
@@ -96,11 +96,11 @@
 							:disabled="duplicateFlag"
 						/>
 						<el-button
-							class="ml-2"
+							class="ml-1"
 							type="primary"
 							@click="fetchDuplicateCheck()"
 							:disabled="duplicateFlag"
-							>중복 검사</el-button
+							>ID 중복 검사</el-button
 						>
 					</el-form-item>
 					<el-form-item label="비밀번호" prop="pw">
@@ -168,6 +168,8 @@
 <script setup>
 import { Plus, WarnTriangleFilled } from '@element-plus/icons-vue';
 import cryptojs from 'crypto-js';
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 const isL2Login = ref(false);
 const siteName = ref(null);
 
@@ -259,7 +261,7 @@ const rules = reactive({
 			pattern: /^[a-zA-Z]{1}[a-zA-Z0-9_]+$/,
 			message: '영어로 시작해야 하며 숫자, 언더스코어(_)만 포함 가능합니다.',
 		},
-		{ min: 4, message: '4자리 이상 입력해주세요.', trigger: 'blur' },
+		{ min: 4, message: `${t('input_more_than_4')}`, trigger: 'blur' },
 	],
 	name: [{ required: true, message: '이름을 입력해주세요.', trigger: 'blur' }],
 	pw: [
@@ -268,7 +270,7 @@ const rules = reactive({
 			pattern: /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/,
 			message: '숫자, 영문자, 특수문자를 각각 최소 한 개 이상 포함해야 합니다.',
 		},
-		{ min: 9, message: '9자리 이상 입력해주세요.', trigger: 'blur' },
+		{ min: 9, message: `${t('input_more_than_9')}`, trigger: 'blur' },
 	],
 	checkPw: [
 		{

@@ -32,6 +32,9 @@
 <script setup>
 const { notification } = useAlarm();
 
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
+
 const emit = defineEmits(['updateEventInfo']);
 
 const props = defineProps(['selectedEventIndex']);
@@ -49,7 +52,7 @@ const callSelectEvent = async (event, index) => {
 			emit('updateEventInfo', res, event.evtid, index);
 		})
 		.catch(err => {
-			notification('API 호출 실패', `${err}`);
+			notification(t('api_call_failed'), `${err}`);
 		});
 };
 

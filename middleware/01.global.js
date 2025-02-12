@@ -1,5 +1,5 @@
 export default defineNuxtRouteMiddleware((to, from) => {
-	console.log(to);
+	const { message } = useAlarm();
 
 	// 루트 경로면 로그인 페이지로 리다이렉트
 	if (to.path === '/') {
@@ -23,6 +23,13 @@ export default defineNuxtRouteMiddleware((to, from) => {
 		// 로그인 상태 확인
 		if (!JSON.parse(sessionStorage.getItem('login'))) {
 			return navigateTo('/login');
+		} else {
+			if (sessionStorage.getItem('ID') !== 'master') {
+				if (to.name !== 'dashboard') {
+					message.warning('접근 권한이 없습니다.');
+					return navigateTo('/dashboard');
+				}
+			}
 		}
 	}
 });

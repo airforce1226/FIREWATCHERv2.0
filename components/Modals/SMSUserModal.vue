@@ -27,7 +27,7 @@
 				<el-radio-group v-model="form.userType" class="ml-4">
 					<el-radio value="master" size="large">도청 관리자</el-radio>
 					<!-- 경상남도 창원용, 충청북도 청주용 지역 관리자 라디오 버튼 -->
-					<el-radio value="admin" size="large">지역 관리자</el-radio>
+					<!-- <el-radio value="admin" size="large">지역 관리자</el-radio> -->
 					<el-radio value="user" size="large">지역 사용자</el-radio>
 				</el-radio-group>
 			</el-form-item>
@@ -83,6 +83,8 @@
 	</el-dialog>
 </template>
 <script setup>
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 const smsModal = defineModel();
 const props = defineProps(['title', 'updateUserInfo']);
 const emit = defineEmits(['fetchUsers']);
@@ -118,8 +120,11 @@ watchEffect(() => {
 				form.userType = props.updateUserInfo.address.userType;
 			}
 
-			smsActive.value = JSON.parse(sessionStorage.getItem('smsActive'));
-			console.log(smsActive.value);
+			smsActive.value = JSON.parse(
+				sessionStorage.getItem('smsActive') === 'undefined'
+					? false
+					: sessionStorage.getItem('smsActive'),
+			);
 		});
 	}
 });
@@ -193,7 +198,7 @@ const addSMSUser = async () => {
 				},
 			},
 		});
-		message.success(`${form.name}이(가) 등록 되었습니다!`);
+		message.success(`${form.name} ${t('registered')}`);
 		emit('fetchUsers');
 		closeModal();
 	} catch (error) {

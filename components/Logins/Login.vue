@@ -68,7 +68,7 @@ sessionStorage.clear();
 
 const login = async () => {
 	if (!id.value || !pw.value) {
-		message.error('ID/PW 를 입력해주세요.');
+		message.error('ID/PW 미입력');
 	} else {
 		encryptedID.value = cryptojs.AES.encrypt(id.value, 'idSalt').toString();
 		encryptedPW.value = cryptojs.AES.encrypt(pw.value, '').toString();
@@ -85,7 +85,7 @@ const login = async () => {
 				sessionStorage.setItem('smsActive', res._data.smsActive); // true -> 도청, 지역 둘다 사용// false -> 지역 시
 				sessionStorage.setItem('ID', res._data.id);
 				sessionStorage.setItem('USER', JSON.stringify(res));
-				message.success('로그인에 성공했어요!!');
+				message.success('로그인 성공');
 				sessionStorage.setItem('login', true);
 				if (res._data.address) {
 					sessionStorage.setItem('L2Login', JSON.stringify(res._data.address));
@@ -95,7 +95,7 @@ const login = async () => {
 			}
 		} catch (error) {
 			if (error.status === 401) {
-				message.error('아이디 또는 비밀번호를 잘못 입력했어요.');
+				message.error('아이디 또는 비밀번호 오류.');
 				id.value = '';
 				pw.value = '';
 			}

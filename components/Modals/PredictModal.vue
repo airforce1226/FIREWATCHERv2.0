@@ -35,7 +35,7 @@
 				</el-descriptions>
 			</el-row>
 			<el-row class="w-full mb-2.5" :gutter="20">
-				<el-col :span="6">
+				<el-col :span="8">
 					<el-card header="이벤트 발생 이미지" class="w-full mb-2">
 						<div
 							class="relative overflow-hidden bg-[#292a2e]"
@@ -95,7 +95,7 @@
 						</div>
 					</el-card>
 				</el-col>
-				<el-col :span="6">
+				<!-- <el-col :span="6">
 					<el-card header="인근 CCTV 영상" class="w-full mb-2 iframe-card">
 						<div class="iframe-container">
 							<iframe
@@ -109,7 +109,6 @@
 					<el-card class="w-full">
 						<template #header>
 							<div class="flex justify-between items-center w-full">
-								<!-- flex 추가 및 justify-between을 justify-end로 변경 -->
 								<span>드론 촬영 영상</span>
 								<el-switch
 									v-model="droneSwitch"
@@ -131,8 +130,8 @@
 							/>
 						</div>
 					</el-card>
-				</el-col>
-				<el-col :span="12">
+				</el-col> -->
+				<el-col :span="16">
 					<el-card class="h-full">
 						<div
 							class="h-full w-full"

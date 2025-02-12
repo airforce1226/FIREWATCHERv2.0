@@ -8,6 +8,7 @@ export default defineNuxtConfig({
 		'@vueuse/nuxt',
 		'@vee-validate/nuxt',
 	],
+	plugins: ['~/plugins/i18n.js'],
 	postcss: {
 		plugins: {
 			tailwindcss: {},

@@ -130,7 +130,7 @@
 					v-if="!l2Login && mode !== 'history'"
 					:icon="VideoPlay"
 					@click="sendCallRTSP()"
-					>실시간 영상 요청</el-button
+					>{{ t('request_live_video') }}</el-button
 				>
 			</div>
 			<el-button
@@ -157,7 +157,8 @@
 
 <script setup>
 const { message } = useAlarm();
-
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 import {
 	Plus,
 	VideoPlay,

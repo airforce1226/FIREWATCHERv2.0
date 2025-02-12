@@ -18,7 +18,7 @@
 			class="bg-[#2C2023A6] border-[#AB3D23]"
 			style="position: absolute; top: 3%; right: 3%; color: white; z-index: 10"
 			@click.stop="openNewWindow()"
-			>새 창 열기</el-button
+			>{{ t('open_in_new_window') }}</el-button
 		>
 		<canvas
 			v-if="!streamChannelID"
@@ -29,7 +29,7 @@
 		<iframe
 			:id="`monitorIframe_${videoSource}`"
 			ref="iframeTag"
-			:src="videoSource"
+			:src="`${videoSource}?clientIP=${hostname}`"
 			class="w-full h-full block m-auto"
 			frameborder="0"
 			allowfullscreen
@@ -40,7 +40,9 @@
 
 <script setup>
 import { ArrowLeftBold, ArrowRightBold } from '@element-plus/icons-vue';
-
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
+const hostname = ref(window.location.hostname);
 const { message } = useAlarm();
 
 const props = defineProps([
@@ -120,10 +122,13 @@ const callRTSP = inject('callRTSP');
 const reloadingIframe = () => {
 	const iframe = document.getElementById(`monitorIframe_${props.videoSource}`);
 	iframe.src = null;
-	setTimeout(() => {
+	// setTimeout(() => {
+	// }, 100);
+	nextTick(() => {
 		iframe.style.height = '1080px';
-		iframe.src = props.displayList[props.monitoringTab];
-	}, 50);
+		iframe.src =
+			props.displayList[props.monitoringTab] + '?clientIP=' + hostname.value;
+	});
 };
 
 const changeMonitorIframe = () => {
@@ -134,7 +139,11 @@ const changeMonitorIframe = () => {
 };
 
 const openNewWindow = () => {
-	window.open(props.videoSource, 'video', 'width=1280,height=720');
+	window.open(
+		`${props.videoSource}?clientIP=${hostname.value}`,
+		'video',
+		'width=1280,height=720',
+	);
 };
 
 defineExpose({ reloadingIframe });

@@ -2,7 +2,7 @@
 	<div>
 		<el-dialog
 			v-model="eventListModal"
-			title="이력 조회"
+			:title="t('view_history')"
 			:width="'90%'"
 			:height="'90%'"
 			align-center
@@ -10,17 +10,22 @@
 		>
 			<div class="card p-6 flex justify-around">
 				<div>
-					<span class="inline-block mr-2.5"> 시/군/구 </span>
+					<span class="inline-block mr-2.5">
+						{{ t('city_county_district') }}
+					</span>
 					<el-select
 						v-model="l2"
 						placeholder="시/군/구 선택"
 						style="width: 150px"
+						:disabled="fixedL2Flag"
 					>
 						<el-option v-for="l2 in l2List" :key="l2" :label="l2" :value="l2" />
 					</el-select>
 				</div>
 				<div>
-					<span class="inline-block mr-2.5"> 읍/면/동 </span>
+					<span class="inline-block mr-2.5">
+						{{ t('town_village_neighborhood') }}
+					</span>
 					<el-select
 						v-model="l3"
 						placeholder="읍/면/동 선택"
@@ -30,7 +35,7 @@
 					</el-select>
 				</div>
 				<div>
-					<span class="inline-block mr-2.5"> 카메라 명 </span>
+					<span class="inline-block mr-2.5"> {{ t('camera_name') }} </span>
 					<el-select
 						v-model="cameraName"
 						placeholder="카메라 명 선택"
@@ -45,7 +50,9 @@
 					</el-select>
 				</div>
 				<div>
-					<span class="inline-block mr-2.5"> 탐지 분류 </span>
+					<span class="inline-block mr-2.5">
+						{{ t('detection_classification') }}
+					</span>
 					<el-select
 						v-model="classItem"
 						placeholder="타입을 선택해 주세요"
@@ -60,7 +67,7 @@
 					</el-select>
 				</div>
 				<div>
-					<span class="inline-block mr-2.5"> 날짜 </span>
+					<span class="inline-block mr-2.5"> {{ t('date') }} </span>
 					<el-config-provider :locale="ko">
 						<el-date-picker
 							v-model="date"
@@ -89,15 +96,15 @@
 						</el-date-picker>
 					</el-config-provider>
 				</div>
-				<el-button type="primary" :icon="Search" @click="search(true)"
-					>검색</el-button
-				>
+				<el-button type="primary" :icon="Search" @click="search(true)">{{
+					t('search')
+				}}</el-button>
 			</div>
 			<div class="mt-5">
 				<div class="flex justify-start mb-2.5">
 					<img src="assets/svgs/eventList_event.svg" class="mr-2" />
 					<em class="card-title mb-0 text-base">
-						이벤트 개수 : {{ totalCount.toLocaleString() }}개
+						{{ t('number_of_events') }} : {{ totalCount.toLocaleString() }}
 					</em>
 				</div>
 				<div v-if="eventList.length > 0" class="h-full">
@@ -182,6 +189,10 @@
 <script setup>
 import ko from 'element-plus/dist/locale/ko.mjs';
 import { Search, Delete } from '@element-plus/icons-vue';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
+
 const { message } = useAlarm();
 
 const $dayjs = useDayjs();
@@ -201,14 +212,24 @@ watch(eventModal, value => {
 	}
 });
 
-watch(eventListModal, value => {
+const fixedL2Flag = ref(false);
+watch(eventListModal, async value => {
 	if (value) {
-		fetchCameraName();
+		await fetchCameraName();
 
 		SOCKET.emit('reqEventDate');
 
+		if (JSON.parse(sessionStorage.getItem('USER'))._data.address) {
+			l2.value = JSON.parse(sessionStorage.getItem('USER'))._data.address.L2;
+			fixedL2Flag.value = true;
+		} else {
+			l2.value = 'All';
+		}
+
+		// l2.value = '태백시';
+		// fixedL2Flag.value = true;
+
 		// Reset Input form
-		l2.value = 'All';
 		l3.value = 'All';
 		cameraName.value = 'All';
 		classItem.value = '';
@@ -261,6 +282,7 @@ watch(
 	value => {
 		l3.value = 'All';
 		cameraName.value = 'All';
+		console.log(value);
 
 		if (value === 'All') {
 			l3List.value = [
@@ -292,6 +314,11 @@ watch(
 						.sort((a, b) => a.localeCompare(b)),
 				),
 			];
+			console.log(value);
+			console.log(cameraList.value);
+			console.log(
+				cameraList.value.filter(item => item.cctv_address.L2 === value),
+			);
 			cameraNameList.value = [
 				{ label: 'All', value: 'All' },
 				...new Set(
@@ -527,7 +554,7 @@ const deleteEvent = event => {
 		})
 		.then(res => {
 			if (res.status === 200) {
-				message.success(`${event.cctvname}(이)가 삭제되었습니다.`);
+				message.success(`${event.cctvname}  ${t('deleted')}`);
 				eventList.value = eventList.value.filter(
 					item => item._id !== event._id,
 				);
@@ -556,15 +583,6 @@ const moveEvent = value => {
 	}
 };
 const inputSmokeTypeModalFlag = ref(false);
-
-const openInputSmokeTypeModal = () => {
-	if (ip.value === '121.188.22.195') {
-		inputSmokeTypeModalFlag.value = true;
-	} else {
-		saveFilter();
-	}
-};
-
 const saveFilter = type => {
 	$fetch
 		.raw(`${BASE_URL}/cctv/history/savefilter`, {
@@ -578,12 +596,19 @@ const saveFilter = type => {
 			if (res.status === 200) {
 				message.success('필터가 등록되었습니다.');
 			} else {
-				message.warning('필터 등록에 오류 발생하였습니다.');
+				message.warning('필터 등록에 오류가 발생하였습니다.');
 			}
 		})
 		.catch(err => {
 			message.error('필터 등록에 실패하였습니다.');
 		});
+};
+const openInputSmokeTypeModal = () => {
+	if (ip.value === '121.188.22.195') {
+		inputSmokeTypeModalFlag.value = true;
+	} else {
+		saveFilter();
+	}
 };
 </script>
 <style scoped>

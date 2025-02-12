@@ -25,6 +25,7 @@ const eventLogin = () => {
 		원주시: 'wonju',
 		화천군: 'hwacheon',
 		철원군: 'cheorwon',
+		관리자: 'master',
 	};
 	$fetch
 		.raw(`${BASE_URL}/event/login`, {

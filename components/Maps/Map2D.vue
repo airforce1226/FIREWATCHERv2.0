@@ -27,7 +27,7 @@
 							size="small"
 							@click="callRTSP(props.row.inferCID), (dialogVisible = false)"
 						>
-							실시간 영상 요청
+							{{ t('request_live_video') }}
 						</el-button>
 					</template>
 				</el-table-column>
@@ -37,6 +37,8 @@
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 const { message } = useAlarm();
 
 const props = defineProps([

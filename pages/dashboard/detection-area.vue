@@ -379,6 +379,8 @@ import {
 	ArrowLeftBold,
 } from '@element-plus/icons-vue';
 import { useHead } from '#app';
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 
 const { message } = useAlarm();
 const router = useRouter();
@@ -473,7 +475,7 @@ const callCCTV = async () => {
 			}
 		})
 		.catch(err => {
-			message.error('API 호출 실패', `${err}`);
+			message.error(t('api_call_failed'), `${err}`);
 		});
 };
 

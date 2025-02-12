@@ -4,7 +4,7 @@
 			<el-col :span="6" class="h-full">
 				<div class="card h-1/2 mb-5 pb-[6.3rem]">
 					<div class="flex justify-between">
-						<em class="card-title"> 서버 상태 </em>
+						<em class="card-title"> {{ t('server_status') }} </em>
 						<el-select
 							style="width: 150px"
 							v-model="serverStatusID"
@@ -33,7 +33,9 @@
 				<el-row :gutter="20" class="h-1/2 pb-5">
 					<el-col :span="12" class="h-full">
 						<div class="card h-full pb-[3.5rem]">
-							<em class="card-title text-sm"> 시간별 이벤트 추정 건수 </em>
+							<em class="card-title text-sm">
+								{{ t('estimated_events_per_hour') }}
+							</em>
 							<Loading v-if="entireLoading" />
 							<div v-else class="h-full">
 								<ChartsTimeChart
@@ -55,7 +57,9 @@
 										: '3.5rem',
 							}"
 						>
-							<em class="card-title text-sm"> 유형별 이벤트 필터 건수 </em>
+							<em class="card-title text-sm">
+								{{ t('event_filters_by_type') }}
+							</em>
 							<Loading v-if="entireLoading" />
 							<div v-else class="h-full">
 								<ChartsTypeChart
@@ -98,7 +102,7 @@
 								v-if="l2List.length > 2"
 								class="mb-4 mr-2"
 								v-model="l2"
-								placeholder="시/군/구"
+								:placeholder="t('city_county_district')"
 								style="width: 110px"
 							>
 								<el-option
@@ -187,7 +191,7 @@
 									:icon="VideoPlay"
 									@click="callRTSP(CAMERA_LIST[currentIndex].inferCID)"
 								>
-									실시간 영상 요청
+									{{ t('request_live_video') }}
 								</el-button>
 							</div>
 							<div class="h-[calc(100%-48px)]">
@@ -216,7 +220,7 @@
 											class="bg-[#292A2E] border border-[#2F3134] p-3.5 rounded h-full pb-[2.5rem]"
 										>
 											<em class="card-title text-sm mb-2.5">
-												유형별 이벤트 필터 건수
+												{{ t('event_filters_by_type') }}
 											</em>
 											<ChartsChannelChart
 												v-if="CAMERA_LIST"
@@ -234,11 +238,11 @@
 			<el-col :span="6">
 				<div class="card h-full">
 					<div class="flex justify-between">
-						<em class="card-title"> 최근 이벤트 세부정보 </em>
+						<em class="card-title"> {{ t('recent_event_details') }} </em>
 						<el-button
 							:icon="Plus"
 							@click="openInputSmokeTypeModal(EVENT_LIST?.evtid)"
-							>필터등록</el-button
+							>{{ t('register_filter') }}</el-button
 						>
 					</div>
 					<Loading v-if="eventListLoading" />
@@ -262,7 +266,7 @@
 		<el-row :gutter="20" class="h-1/2">
 			<el-col :span="6" class="h-full">
 				<div class="card h-full pb-5">
-					<em class="card-title"> CCTV 상태 정보 </em>
+					<em class="card-title"> {{ t('cctv_status_info') }} </em>
 					<div class="h-[calc(100%-48px)] overflow-y-scroll">
 						<Loading v-if="entireLoading" />
 						<div v-else class="h-[calc(100%-52px)]">
@@ -351,7 +355,7 @@
 								class="bg-[#292A2E] border border-[#2F3134] p-3.5 rounded h-full pb-[2.5rem]"
 							>
 								<em class="card-title text-sm mb-2.5">
-									유형별 이벤트 필터 건수
+									{{ t('event_filters_by_type') }}
 								</em>
 								<ChartsChannelChart
 									v-if="CAMERA_LIST"
@@ -366,16 +370,19 @@
 			<el-col :span="6" class="h-full">
 				<div class="card h-full">
 					<div class="flex justify-between">
-						<em class="card-title mb-0"> 이벤트 리스트 </em>
+						<em class="card-title mb-0"> {{ t('event_list') }} </em>
 						<div>
-							<el-button :icon="Download" class="mb-5" @click="downloadExcel()"
-								>엑셀 다운로드</el-button
+							<el-button
+								:icon="Download"
+								class="mb-5"
+								@click="downloadExcel()"
+								>{{ t('download_as_excel') }}</el-button
 							>
 							<el-button
 								:icon="Search"
 								class="mb-5"
 								@click="openEventListModal()"
-								>이력 조회</el-button
+								>{{ t('view_history') }}</el-button
 							>
 						</div>
 					</div>
@@ -413,11 +420,6 @@
 		<ModalsEventHistorySearch
 			v-model="eventListModal"
 		></ModalsEventHistorySearch>
-		<!-- <ModalsAlertModal
-			v-model="saveFilterFlag"
-			content="필터가 등록되었습니다."
-			ok="닫기"
-		></ModalsAlertModal> -->
 		<ModalsAlertModal
 			v-model="inputSmokeTypeModalFlag"
 			ok="입력"
@@ -438,6 +440,9 @@ import {
 } from '@element-plus/icons-vue';
 import 'vue3-carousel/dist/carousel.css';
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
+
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 
 const { notification } = useAlarm();
 const { message } = useAlarm();
@@ -576,7 +581,6 @@ const callEventList = async () => {
 		}
 
 		if (res?.evtlist?.length > 0) {
-			console.log(res);
 			// 영상 녹화를 위한 하드 코딩 - 1204 이종훈
 			// const filteredEvents = {
 			// 	...res,
@@ -591,7 +595,6 @@ const callEventList = async () => {
 				// 영상 녹화를 위한 하드 코딩 - 1204 이종훈
 				// EVENT_LIST.value = filteredEvents;
 				EVENT_LIST.value = res;
-				console.log(res);
 
 				EVENT_LIST.value.evtlist.sort(
 					(a, b) => new Date(b.evtTime) - new Date(a.evtTime),
@@ -619,7 +622,7 @@ const callEventList = async () => {
 			notification('Event List 없음');
 		}
 	} catch {
-		notification('API 호출 실패');
+		notification(t('api_call_failed'));
 	}
 };
 
@@ -779,7 +782,7 @@ const callIssueCCTV = async () => {
 			}
 		})
 		.catch(err => {
-			notification('API 호출 실패', `${err}`);
+			notification(t('api_call_failed'), `${err}`);
 		});
 };
 
@@ -829,7 +832,7 @@ const callCCTV = async () => {
 			}
 		})
 		.catch(err => {
-			notification('API 호출 실패', `${err}`);
+			notification(t('api_call_failed'), `${err}`);
 			CAMERA_LIST.value = null;
 		});
 };
@@ -872,10 +875,13 @@ SOCKET.on('displayinfo', (info, data) => {
 			cctvRowColumnList.value[Object.keys(ele)[0]] = Object.values(ele)[0];
 		});
 	} else {
-		message.error('CCTV SVR List is null');
+		message.error('CCTV SVR 리스트가 비어있습니다.');
 	}
 
-	const tempinfo = info.map(ele => ele.url);
+	const tempinfo =
+		window.location.hostname.split('.')[0] === '106'
+			? info.map(ele => ele.externalURL)
+			: info.map(ele => ele.url);
 
 	// displayList에 있는 요소 중 tempinfo에 없는 요소 제거
 	displayList.value.filter(ele => tempinfo.includes(ele));
@@ -917,6 +923,7 @@ const callRTSP = inferCID => {
 			console.log(index);
 		}
 	}
+	console.log(`916:index = ${index}`);
 	monitoringTab.value = index;
 };
 const closeRTSP = () => {
@@ -1026,16 +1033,17 @@ const openInputSmokeTypeModal = tcid => {
 	}
 };
 
-const saveiFlter = type => {
+const saveFilter = type => {
+	console.log(filterTCID.value);
 	$fetch
-		.raw(`${BASE_URL}/cctv/savefilter/${filterTCID.value}/${type}`, {
+		.raw(`${BASE_URL}/cctv/savefilter/${filterTCID.value}/${type || ''}`, {
 			method: 'GET',
 		})
 		.then(res => {
 			if (res.status === 200) {
 				message.success('필터가 등록되었습니다.');
 			} else {
-				message.warning('필터 등록에 오류 발생하였습니다.');
+				message.warning('필터 등록에 오류가 발생하였습니다.');
 			}
 		})
 		.catch(err => {
@@ -1248,6 +1256,10 @@ const prevIndex = url => {
 };
 
 const nextIndex = url => {
+	console.log(url);
+	console.log(MonitoringRef.value);
+	console.log(monitoringTab.value);
+	console.log(MonitoringRef.value[monitoringTab.value]);
 	MonitoringRef.value[monitoringTab.value].reloadingIframe();
 
 	let tabIndex = displayList.value.findIndex(item => item === url);
@@ -1258,6 +1270,7 @@ const nextIndex = url => {
 	} else {
 		index = tabIndex + 1;
 	}
+	console.log(index);
 	updateMonitoringTab(index);
 };
 

@@ -76,6 +76,8 @@
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 const modal = defineModel();
 const props = defineProps([
 	'title',
@@ -334,20 +336,17 @@ const updateCamera1 = async temp => {
 				Type: TEMP_CAMERA1[temp].Type,
 			},
 		});
-		// message.success(`${form.name} 이(가) 수정 되었습니다.`);
 	} catch (error) {
 		console.log(error);
-		// message.error(`${form.name} 수정 실패`);
 	}
 };
-
 const submitForm = formRef => {
 	if (!formRef) return;
 	formRef.validate(async valid => {
 		if (valid) {
 			if (props.createMode) {
 				await createCamera(form);
-				message.success(`${form.name} 이(가) 등록 되었습니다.`);
+				message.success(`${form.name} ${t('registered')}`);
 			} else {
 				// 기존 카메라 업데이트 코드
 				// for (let i = 0; i < TEMP_CAMERA1.length; i++) {

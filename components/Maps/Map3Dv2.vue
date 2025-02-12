@@ -13,14 +13,14 @@
 					class="mr-2"
 					v-model="location_name"
 					:autofocus="Boolean(true)"
-					placeholder="지번 명 입력"
+					placeholder="위치 명 입력"
 				/>
 				<el-button
 					:disabled="location_name === ''"
 					class="ml-2.5"
 					type="primary"
 					@click="addPolygon()"
-					>지번 명 중복 검사 및 등록</el-button
+					>위치 명 중복 검사 및 등록</el-button
 				>
 				<el-button class="ml-2.5" type="primary" @click="cancelDrawingPolygon()"
 					>취소</el-button
@@ -33,6 +33,8 @@
 import markerImage_sm from '@/assets/markerPoint_sm.png';
 import centerPoint from '@/assets/centerPoint.png';
 import * as Cesium from 'cesium';
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 const vw = ref();
 
 if (!vw.value) {
@@ -217,7 +219,7 @@ const setArea = () => {
 			emit('updateMarkersVisible', true);
 		}
 	} else {
-		message.warning('3개 이상의 꼭짓점을 선택해주세요.');
+		message.warning(t('select_vertices'));
 		cancelDrawingPolygon();
 	}
 };

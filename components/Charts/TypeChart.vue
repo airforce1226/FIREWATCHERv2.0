@@ -2,7 +2,7 @@
 	<div v-if="data" class="h-full">
 		<Doughnut :data="chartData" :options="chartOptions" />
 		<div class="flex justify-between text-[10px] text-[#B7B7B7] m-auto mt-4">
-			<el-tooltip effect="firewatcher-chart" content="발생한 총 이벤트 수">
+			<el-tooltip effect="firewatcher-chart" :content="t('total_events')">
 				<div class="flex items-center">
 					<i class="inline-block rounded mr-1.5 w-1 h-1 bg-[#732028]" />
 					<span class="cursor-default">이벤트</span>
@@ -10,7 +10,7 @@
 			</el-tooltip>
 			<el-tooltip
 				effect="firewatcher-chart"
-				content="카메라 문제로 인해 발견되었으나 고려되지 않은 이벤트 수"
+				:content="t('excluded_events_due_to_camera')"
 			>
 				<div class="flex items-center">
 					<i class="inline-block rounded mr-1.5 w-1 h-1 bg-[#983539]" />
@@ -19,7 +19,7 @@
 			</el-tooltip>
 			<el-tooltip
 				effect="firewatcher-chart"
-				content="비나 습도 등의 날씨 조건으로 인해 고려되지 않은 이벤트 수"
+				:content="t('excluded_events_due_to_weather')"
 			>
 				<div class="flex items-center">
 					<i class="inline-block rounded mr-1.5 w-1 h-1 bg-[#ab3d23]" />
@@ -28,7 +28,7 @@
 			</el-tooltip>
 			<el-tooltip
 				effect="firewatcher-chart"
-				content="분석 모델을 통해 고려되지 않은 이벤트 수"
+				:content="t('excluded_events_through_analysis')"
 			>
 				<div class="flex items-center">
 					<i class="inline-block rounded mr-1.5 w-1 h-1 bg-[#D37719]" />
@@ -37,7 +37,7 @@
 			</el-tooltip>
 			<el-tooltip
 				effect="firewatcher-chart"
-				content="모든 필터를 거친 후 남은 이벤트 수"
+				:content="t('events_remaining_after_filters')"
 				placement="bottom-end"
 			>
 				<div class="flex items-center">
@@ -51,7 +51,8 @@
 <script setup>
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'vue-chartjs';
-
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const props = defineProps(['data']);

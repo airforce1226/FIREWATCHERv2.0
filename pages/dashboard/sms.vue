@@ -40,6 +40,9 @@
 			>
 				초기화
 			</el-button>
+			<el-button type="primary" size="large" @click="deleteAllUser()">
+				전체 삭제
+			</el-button>
 		</div>
 
 		<el-row
@@ -80,7 +83,7 @@
 				<el-col :span="4">{{ user.name }}</el-col>
 				<el-col :span="4">{{ user.phoneNumber }}</el-col>
 				<el-col v-if="isActive" :span="4">{{
-					user.address.L2 !== '' ? user.address.L2 : '도청 관리자'
+					user.address?.L2 !== '' ? user.address?.L2 || '-' : '도청 관리자'
 				}}</el-col>
 				<el-col v-else :span="4">관리자</el-col>
 				<el-col :span="4">
@@ -122,6 +125,8 @@
 </template>
 <script setup>
 import { Plus, WarnTriangleFilled } from '@element-plus/icons-vue';
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 
 const isActive = ref(
 	JSON.parse(sessionStorage.getItem('isActive') === undefined ? false : true),
@@ -179,18 +184,29 @@ const changeAlarm = async (user, dayReverse, nightReverse) => {
 					: user.NighttimeReception,
 				status: dayReverse ? !user.status : user.status,
 				address: {
-					L1: user.address.L1,
-					L2: user.address.L2,
-					userType: user.address.userType,
+					L1: user.address?.L1,
+					L2: user.address?.L2,
+					userType: user.address?.userType,
 				},
 			},
 		});
-		message.success(`${user.name}이(가) 수정되었습니다.`);
+		message.success(`${user.name} ${t('modified')}`);
 	} catch (error) {
 		console.log(error);
 	}
 };
 
+const deleteAllUser = async () => {
+	try {
+		userList.value.forEach(async item => {
+			await $fetch(`${BASE_URL}/sms/user/delete/${item._id}`, {
+				method: 'GET',
+			});
+		});
+	} catch (error) {
+		console.log(error);
+	}
+};
 const deleteUser = async user => {
 	try {
 		await $fetch(`${BASE_URL}/sms/user/delete/${user._id}`, { method: 'GET' });
