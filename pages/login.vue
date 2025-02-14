@@ -15,6 +15,9 @@
 	</div>
 </template>
 <script setup>
+import { useI18n } from 'vue-i18n'; // Import useI18n
+
+const { t } = useI18n(); // Destructure t from useI18n
 sessionStorage.clear();
 definePageMeta({
 	layout: '',
@@ -38,8 +41,8 @@ const checkAdminAccountExists = async () => {
 			method: 'GET',
 		});
 		if (res.status === 204) {
-			message.warning('현재 생성된 계정이 없습니다.');
-			message.warning('먼저 계정을 생성해 주세요.');
+			message.warning(t('no_accounts_created'));
+			message.warning(t('create_account_first'));
 			permission.value = true;
 		}
 	} catch (error) {

@@ -14,7 +14,7 @@
 				<el-input v-model="gpu" placeholder="1" />
 			</el-form-item>
 			<el-form-item class="align-buttons__dialog">
-				<el-button @click="modal = false">취소</el-button>
+				<el-button @click="modal = false">{{ t('cancel') }}</el-button>
 				<el-button
 					type="primary"
 					@click="updateServerInfo ? updateServer() : registerServer()"
@@ -27,11 +27,12 @@
 	</el-dialog>
 </template>
 <script setup>
+import { useI18n } from 'vue-i18n'; // Import useI18n
+
+const { t } = useI18n(); // Destructure t from useI18n
 const modal = defineModel();
 const props = defineProps(['title', 'updateServerInfo']);
 const emit = defineEmits(['fetchServerList']);
-import { useI18n } from 'vue-i18n';
-const { t } = useI18n();
 
 const { message } = useAlarm();
 
@@ -78,13 +79,13 @@ const registerServer = async () => {
 	} catch (error) {
 		switch (error.data) {
 			case 'svr_id 정보가 이미 존재합니다.':
-				message.error('이미 등록된 서버 아이디입니다.');
+				message.error(t('server_id_already_registered'));
 				break;
 			case 'IP and streamPort 정보가 이미 존재합니다.':
-				message.error('이미 등록된 IP & 포트입니다.');
+				message.error(t('ip_port_already_registered'));
 				break;
 			case `svr_id는 'svrN' 형식이어야 하며, 여기서 N은 하나 이상의 숫자입니다.`:
-				message.error('서버 아이디는 svrN 형식으로 입력해 주세요');
+				message.error(t('input_server_id_format'));
 				break;
 		}
 	}

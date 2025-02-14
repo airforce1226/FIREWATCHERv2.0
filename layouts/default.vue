@@ -69,8 +69,9 @@
 	</div>
 </template>
 <script setup>
-import { useI18n } from 'vue-i18n';
-const { t } = useI18n();
+import { useI18n } from 'vue-i18n'; // Import useI18n
+
+const { t } = useI18n(); // Destructure t from useI18n
 const { message } = useAlarm();
 
 import menu01 from '@/assets/svgs/menu01.svg';

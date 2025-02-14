@@ -24,7 +24,7 @@
 					<span v-else-if="item.key === '시간'">
 						{{ formatDate(eventInfo[item.value]) }}
 					</span>
-					<span v-else-if="item.key === '카메라 명'">
+					<span v-else-if="item.key === 'camera_name'">
 						{{ eventInfo[item.value] || 'No Data' }}
 						{{ eventInfo.Type ? '- ' + eventInfo.Type : '' }}
 					</span>
@@ -156,9 +156,11 @@
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n'; // Import useI18n
+
+const { t } = useI18n(); // Destructure t from useI18n
 const { message } = useAlarm();
-import { useI18n } from 'vue-i18n';
-const { t } = useI18n();
+
 import {
 	Plus,
 	VideoPlay,
@@ -193,7 +195,7 @@ const cameraInfoForm = reactive([
 		value: 'cctv_address',
 	},
 	{
-		key: '카메라 명',
+		key: 'camera_name',
 		value: 'cctv_name',
 	},
 	{
@@ -317,10 +319,10 @@ const callFireSpreadPrediction = () => {
 			predictEventInfo.value = props.eventInfo;
 			predictMappingInfo.value = mappingInfo.value;
 			predictRstImage.value = props.eventModalRstImage;
-			message.success('산불 예상 확산 모델 호출 완료');
+			message.success(t('wildfire_model_called_successfully'));
 		})
 		.catch(err => {
-			message.error('산불 예상 확산 모델 호출 실패');
+			message.error(t('wildfire_model_call_failed'));
 		});
 };
 

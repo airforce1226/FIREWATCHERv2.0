@@ -39,9 +39,11 @@
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n'; // Import useI18n
+
+const { t } = useI18n(); // Destructure t from useI18n
 import { ArrowLeftBold, ArrowRightBold } from '@element-plus/icons-vue';
-import { useI18n } from 'vue-i18n';
-const { t } = useI18n();
+
 const hostname = ref(window.location.hostname);
 const { message } = useAlarm();
 

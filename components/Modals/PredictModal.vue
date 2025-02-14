@@ -157,6 +157,9 @@
 	</el-dialog>
 </template>
 <script setup>
+import { useI18n } from 'vue-i18n'; // Import useI18n
+
+const { t } = useI18n(); // Destructure t from useI18n
 import { Toolbar } from '@fancyapps/ui/dist/panzoom/panzoom.toolbar.esm.js';
 import { Panzoom } from '@fancyapps/ui/dist/panzoom/panzoom.esm.js';
 import '@fancyapps/ui/dist/panzoom/panzoom.toolbar.css';
@@ -269,7 +272,7 @@ SOCKET.on('result_predict', data => {
 	isLoading.value = false;
 
 	if (data.status === -4) {
-		message.warning('산불 예상 확산 모델 기상청 데이터 오류');
+		message.warning(t('wildfire_model_data_error'));
 		// predictModalFlag.value = false;
 	} else {
 	}

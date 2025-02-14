@@ -42,9 +42,9 @@
 					<el-popconfirm
 						width="180"
 						confirm-button-text="삭제"
-						cancel-button-text="취소"
+						cancel-button-text="{{ t('cancel') }}"
 						:icon="WarnTriangleFilled"
-						title="정말 삭제하시겠습니까?"
+						:title="t('confirm_delete')"
 						@confirm="deleteServer(server)"
 					>
 						<template #reference>

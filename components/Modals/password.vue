@@ -66,6 +66,9 @@
 	</div>
 </template>
 <script setup>
+import { useI18n } from 'vue-i18n'; // Import useI18n
+
+const { t } = useI18n(); // Destructure t from useI18n
 import { InfoFilled } from '@element-plus/icons-vue';
 const { message } = useAlarm();
 const modal = defineModel('passwordModal');
@@ -86,7 +89,7 @@ const closeModal = () => {
 };
 
 const changePassword = () => {
-	message.success('비밀번호가 변경되었습니다.');
+	message.success(t('password_changed'));
 	closeModal();
 };
 </script>

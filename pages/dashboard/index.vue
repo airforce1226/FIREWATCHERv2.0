@@ -116,7 +116,7 @@
 							<el-select
 								class="mb-4 mr-2"
 								v-model="l3"
-								placeholder="읍/면/동"
+								:placeholder="t('town_village_neighborhood')"
 								style="width: 110px"
 							>
 								<el-option
@@ -130,7 +130,7 @@
 							<el-select
 								class="mb-4"
 								v-model="cameraName"
-								placeholder="카메라 명"
+								:placeholder="t('camera_name')"
 								style="width: 150px"
 							>
 								<el-option
@@ -428,6 +428,9 @@
 	</div>
 </template>
 <script setup>
+import { useI18n } from 'vue-i18n'; // Import useI18n
+
+const { t } = useI18n(); // Destructure t from useI18n
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx';
 import {
@@ -440,9 +443,6 @@ import {
 } from '@element-plus/icons-vue';
 import 'vue3-carousel/dist/carousel.css';
 import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel';
-
-import { useI18n } from 'vue-i18n';
-const { t } = useI18n();
 
 const { notification } = useAlarm();
 const { message } = useAlarm();
@@ -622,7 +622,7 @@ const callEventList = async () => {
 			notification('Event List 없음');
 		}
 	} catch {
-		notification(t('api_call_failed'));
+		notification($i18n.t('api_call_failed'));
 	}
 };
 
@@ -645,10 +645,13 @@ let eventModalTimeout;
 
 SOCKET.on('evtinfo', (evtinfo, infferTCID) => {
 	// 10초 후에 eventModal을 false로 변경하는 타이머 설정
-	clearTimeout(eventModalTimeout); // 이전 타이머 초기화
-	eventModalTimeout = setTimeout(() => {
-		eventModal.value = false;
-	}, 1000 * 10);
+
+	if (ip.value === '59.24.205.122') {
+		clearTimeout(eventModalTimeout); // 이전 타이머 초기화
+		eventModalTimeout = setTimeout(() => {
+			eventModal.value = false;
+		}, 1000 * 10);
+	}
 
 	console.log(evtinfo);
 	// 동일한 infferTCID 호출중
@@ -708,7 +711,8 @@ SOCKET.on('evtinfo', (evtinfo, infferTCID) => {
 		if (
 			ip.value === '59.24.205.123' ||
 			ip.value === '10.10.10.2' ||
-			site === '강원도청'
+			ip.value === '180.69.51.118' ||
+			site.value === '강원도청'
 		) {
 			// 남부지방산림청 - 외부IP || 내부IP
 			// 강원 도청 소리 on off // 처리 예정
@@ -723,6 +727,7 @@ const site = ref(SITE);
 const infferTCID = ref(null); // 모달에서 saveFilter, 실시간 영상 호출을 위한 infferTCID
 
 const openEventModal = (evtinfo, TCID) => {
+	playPopupSound();
 	eventInfo.value = null;
 	eventInfo.value = evtinfo;
 	detailMappingInfo.value = deduplicateMappingInfo(evtinfo.mapping_Info);
@@ -748,10 +753,10 @@ const moveEvent = value => {
 	selectedEventIndex.value += value;
 
 	if (selectedEventIndex.value < 0) {
-		message.warning('첫번째 이벤트입니다');
+		message.warning(t('first_event'));
 		selectedEventIndex.value -= value;
 	} else if (EVENT_LIST.value.evtlist.length - 1 < selectedEventIndex.value) {
-		message.warning('마지막 이벤트입니다');
+		message.warning(t('last_event'));
 
 		selectedEventIndex.value -= value;
 	} else {
@@ -827,7 +832,7 @@ const callCCTV = async () => {
 					createL3List(ele);
 				});
 			} else {
-				notification('카메라 리스트 없음');
+				notification(t('no_camera_list_found'));
 				CAMERA_LIST.value = null;
 			}
 		})
@@ -875,7 +880,7 @@ SOCKET.on('displayinfo', (info, data) => {
 			cctvRowColumnList.value[Object.keys(ele)[0]] = Object.values(ele)[0];
 		});
 	} else {
-		message.error('CCTV SVR 리스트가 비어있습니다.');
+		message.error(t('cctv_svr_empty'));
 	}
 
 	const tempinfo =
@@ -903,7 +908,7 @@ const callRTSP = inferCID => {
 		method: 'GET',
 	})
 		.then(res => {
-			message.success(`${inferCID} 영상 호출 완료`);
+			message.success(`${inferCID} ${t('video_retrieved_successfully')}`);
 			eventModal.value = false; // 모달 속 실시간 영상 호출시, 모달 닫기
 		})
 		.catch(err => {
@@ -933,7 +938,7 @@ const closeRTSP = () => {
 		method: 'GET',
 	})
 		.then(res => {
-			message.success(' 영상 전환 완료');
+			message.success(t('video_switching_complete'));
 		})
 		.catch(err => {
 			console.log(err);
@@ -1041,9 +1046,9 @@ const saveFilter = type => {
 		})
 		.then(res => {
 			if (res.status === 200) {
-				message.success('필터가 등록되었습니다.');
+				message.success(t('filter_registered'));
 			} else {
-				message.warning('필터 등록에 오류가 발생하였습니다.');
+				message.warning(t('filter_registration_error'));
 			}
 		})
 		.catch(err => {
@@ -1209,13 +1214,13 @@ const getCenterZoom = () => {
 				if (res._data.zoom) {
 					zoom.value = res._data.zoom;
 				}
-				message.success('지도 중심점 호출 완료');
+				message.success(t('map_central_point_retrieval_complete'));
 			} else if (res.status === 204) {
 				message.warning('등록된 중심점 없음');
 			}
 		})
 		.catch(err => {
-			message.error('지도 중심점 호출 실패');
+			message.error(t('map_central_point_retrieval_failed'));
 		});
 };
 
@@ -1256,10 +1261,6 @@ const prevIndex = url => {
 };
 
 const nextIndex = url => {
-	console.log(url);
-	console.log(MonitoringRef.value);
-	console.log(monitoringTab.value);
-	console.log(MonitoringRef.value[monitoringTab.value]);
 	MonitoringRef.value[monitoringTab.value].reloadingIframe();
 
 	let tabIndex = displayList.value.findIndex(item => item === url);
@@ -1270,7 +1271,6 @@ const nextIndex = url => {
 	} else {
 		index = tabIndex + 1;
 	}
-	console.log(index);
 	updateMonitoringTab(index);
 };
 
@@ -1278,7 +1278,6 @@ const downloadExcel = async () => {
 	try {
 		// Check if EVENT_LIST and evtlist exist
 
-		console.log(EVENT_LIST.value);
 		if (!EVENT_LIST.value || !EVENT_LIST.value.evtlist) {
 			console.error('No event list data available for download.');
 			return;

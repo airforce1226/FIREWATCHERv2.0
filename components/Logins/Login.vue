@@ -53,6 +53,9 @@
 	</div>
 </template>
 <script setup>
+import { useI18n } from 'vue-i18n'; // Import useI18n
+
+const { t } = useI18n(); // Destructure t from useI18n
 import { User, Lock } from '@element-plus/icons-vue';
 import cryptojs from 'crypto-js';
 
@@ -68,7 +71,7 @@ sessionStorage.clear();
 
 const login = async () => {
 	if (!id.value || !pw.value) {
-		message.error('ID/PW 미입력');
+		message.error(t('id_pw_not_entered'));
 	} else {
 		encryptedID.value = cryptojs.AES.encrypt(id.value, 'idSalt').toString();
 		encryptedPW.value = cryptojs.AES.encrypt(pw.value, '').toString();
@@ -82,10 +85,10 @@ const login = async () => {
 			});
 			if (res.status === 200) {
 				sessionStorage.setItem('isActive', res._data.isActive);
-				sessionStorage.setItem('smsActive', res._data.smsActive); // true -> 도청, 지역 둘다 사용// false -> 지역 시
+				sessionStorage.setItem('smsActive', res._data.smsActive); // true -> 도청, 지역 둘다 사용// false -> 지역 시 // 대구시 기준으로 - 울진은 smsActive false 로 들어가있지않음. server 변경해야함
 				sessionStorage.setItem('ID', res._data.id);
 				sessionStorage.setItem('USER', JSON.stringify(res));
-				message.success('로그인 성공');
+				message.success(t('login_success'));
 				sessionStorage.setItem('login', true);
 				if (res._data.address) {
 					sessionStorage.setItem('L2Login', JSON.stringify(res._data.address));
@@ -95,7 +98,7 @@ const login = async () => {
 			}
 		} catch (error) {
 			if (error.status === 401) {
-				message.error('아이디 또는 비밀번호 오류.');
+				message.error(t('incorrect_id_or_password'));
 				id.value = '';
 				pw.value = '';
 			}

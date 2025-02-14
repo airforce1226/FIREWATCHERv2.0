@@ -49,10 +49,11 @@
 	</div>
 </template>
 <script setup>
+import { useI18n } from 'vue-i18n'; // Import useI18n
+
+const { t } = useI18n(); // Destructure t from useI18n
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from 'vue-chartjs';
-import { useI18n } from 'vue-i18n';
-const { t } = useI18n();
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const props = defineProps(['data']);

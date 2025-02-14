@@ -21,7 +21,9 @@
 			class="mr-5 cursor-pointer"
 			@click="router.push('/dashboard')"
 		/>
-		<el-divider content-position="left">이벤트 알람 설정</el-divider>
+		<el-divider content-position="left">{{
+			t('event_alarm_settings')
+		}}</el-divider>
 
 		<div class="flex justify-end items-center mb-5">
 			<el-button
@@ -30,7 +32,7 @@
 				size="large"
 				@click="openModal('등록')"
 			>
-				SMS 유저 등록
+				{{ t('register_sms_user') }}
 			</el-button>
 			<el-button
 				:icon="Plus"
@@ -48,30 +50,33 @@
 		<el-row
 			class="bg-[#26272A] border border-[#2F3031] rounded py-5 px-14 text-center mb-2.5"
 		>
-			<el-col :span="2">순번</el-col>
-			<el-col :span="4">이름</el-col>
-			<el-col :span="4">전화번호</el-col>
-			<el-col :span="4">유형</el-col>
+			<el-col :span="2">{{ t('sequence_number') }}</el-col>
+			<el-col :span="4">{{ t('name') }}</el-col>
+			<el-col :span="4">{{ t('phone_number') }}</el-col>
+			<el-col :span="4">{{ t('type') }}</el-col>
 			<el-tooltip
 				placement="top"
 				effect="firewatcher"
 				content="알림 설정이 반전됩니다. "
 			>
-				<el-col :span="4" @click="reverseDayAlert()" style="cursor: pointer"
-					>주간 알림</el-col
-				>
+				<el-col :span="4" @click="reverseDayAlert()" style="cursor: pointer">{{
+					t('daytime_alarm')
+				}}</el-col>
 			</el-tooltip>
 			<el-tooltip
 				placement="top"
 				effect="firewatcher"
 				content="알림 설정이 반전됩니다. "
 			>
-				<el-col :span="4" @click="reverseNightAlert()" style="cursor: pointer"
-					>야간 알림</el-col
+				<el-col
+					:span="4"
+					@click="reverseNightAlert()"
+					style="cursor: pointer"
+					>{{ t('nighttime_alarm') }}</el-col
 				>
 			</el-tooltip>
 
-			<el-col :span="2">수정 / 삭제</el-col>
+			<el-col :span="2">{{ t('edit_delete') }}</el-col>
 		</el-row>
 
 		<div class="h-[calc(100%-205px)] overflow-y-scroll">
@@ -83,7 +88,7 @@
 				<el-col :span="4">{{ user.name }}</el-col>
 				<el-col :span="4">{{ user.phoneNumber }}</el-col>
 				<el-col v-if="isActive" :span="4">{{
-					user.address?.L2 !== '' ? user.address?.L2 || '-' : '도청 관리자'
+					user.address?.L2 !== '' ? user.address?.L2 || '-' : '관리자'
 				}}</el-col>
 				<el-col v-else :span="4">관리자</el-col>
 				<el-col :span="4">
@@ -102,9 +107,9 @@
 					<el-popconfirm
 						width="200"
 						confirm-button-text="삭제"
-						cancel-button-text="취소"
+						cancel-button-text="{{ t('cancel') }}"
 						:icon="WarnTriangleFilled"
-						title="정말 삭제하시겠습니까?"
+						:title="t('confirm_delete')"
 						@confirm="deleteUser(user)"
 					>
 						<template #reference>
@@ -124,9 +129,10 @@
 	</div>
 </template>
 <script setup>
+import { useI18n } from 'vue-i18n'; // Import useI18n
+
+const { t } = useI18n(); // Destructure t from useI18n
 import { Plus, WarnTriangleFilled } from '@element-plus/icons-vue';
-import { useI18n } from 'vue-i18n';
-const { t } = useI18n();
 
 const isActive = ref(
 	JSON.parse(sessionStorage.getItem('isActive') === undefined ? false : true),
@@ -239,11 +245,11 @@ const initUserSave = () => {
 			if (smsUserList[initUserIndex]) {
 				initUserSave();
 			} else {
-				message.success(`최초 사용자 등록이 완료 되었습니다!`);
+				message.success(t('initial_user_registration_complete'));
 			}
 		})
 		.catch(err => {
-			message.error(`최초 사용자 등록에 실패하였습니다.`);
+			message.error(t('initial_user_registration_failed'));
 		});
 };
 

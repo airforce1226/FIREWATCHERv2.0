@@ -30,10 +30,10 @@
 	</div>
 </template>
 <script setup>
-const { notification } = useAlarm();
+import { useI18n } from 'vue-i18n'; // Import useI18n
 
-import { useI18n } from 'vue-i18n';
-const { t } = useI18n();
+const { t } = useI18n(); // Destructure t from useI18n
+const { notification } = useAlarm();
 
 const emit = defineEmits(['updateEventInfo']);
 

@@ -89,7 +89,7 @@
 						<input
 							type="text"
 							class="placeholder:text-[#ffffffab] placeholder:text-sm text-white block bg-[#FFFFFF4D] w-[310px] py-2.5 pl-9 pr-3 rounded focus:outline-none focus:border-[#cd4c54] focus:ring-[#cd4c54] focus:ring-1"
-							placeholder="이름"
+							:placeholder="t('name')"
 							:value="field.value"
 							@input="handleChange($event.target.value)"
 						/>
@@ -110,7 +110,7 @@
 						<input
 							type="text"
 							class="placeholder:text-[#ffffffab] placeholder:text-sm text-white block bg-[#FFFFFF4D] w-[310px] py-2.5 pl-9 pr-3 rounded focus:outline-none focus:border-[#cd4c54] focus:ring-[#cd4c54] focus:ring-1"
-							placeholder="전화번호"
+							:placeholder="t('phone_number')"
 							:value="field.value"
 							@input="[handleChange($event.target.value)]"
 						/>
@@ -130,6 +130,9 @@
 	</div>
 </template>
 <script setup>
+import { useI18n } from 'vue-i18n'; // Import useI18n
+
+const { t } = useI18n(); // Destructure t from useI18n
 import { EditPen, Iphone, User, Lock, Position } from '@element-plus/icons-vue';
 import cryptojs from 'crypto-js';
 import { Form, Field } from 'vee-validate';
@@ -178,10 +181,7 @@ const schema = yup.object({
 		.required()
 		.min(4)
 		.label('아이디를')
-		.matches(
-			/^[a-zA-Z]{1}[a-zA-Z0-9_]+$/,
-			'영어로 시작해야 하며 숫자, 언더스코어(_)만 포함 가능합니다.',
-		),
+		.matches(/^[a-zA-Z]{1}[a-zA-Z0-9_]+$/, t('must_start_with_letter')),
 	pw: yup
 		.string()
 		.required()
@@ -189,7 +189,7 @@ const schema = yup.object({
 		.min(9)
 		.matches(
 			/^.*(?=^.{9,}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/,
-			'숫자, 영문자, 특수문자를 각각 최소 한 개 이상 포함해야 합니다.',
+			t('must_include_characters'),
 		),
 	pwCheck: yup
 		.string()
@@ -206,6 +206,7 @@ const schema = yup.object({
 			'전화번호는 000-0000-0000 형식으로 입력해 주세요.',
 		),
 });
+// 베트남 납품 시, 현지 휴대전화 번호 형식으로 validation 변경해야함!
 </script>
 <style scoped>
 .login-form-cover {

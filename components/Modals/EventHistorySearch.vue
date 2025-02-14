@@ -15,7 +15,7 @@
 					</span>
 					<el-select
 						v-model="l2"
-						placeholder="시/군/구 선택"
+						:placeholder="t('select_city')"
 						style="width: 150px"
 						:disabled="fixedL2Flag"
 					>
@@ -28,7 +28,7 @@
 					</span>
 					<el-select
 						v-model="l3"
-						placeholder="읍/면/동 선택"
+						:placeholder="t('select_town')"
 						style="width: 150px"
 					>
 						<el-option v-for="l3 in l3List" :key="l3" :label="l3" :value="l3" />
@@ -187,11 +187,11 @@
 	</div>
 </template>
 <script setup>
+import { useI18n } from 'vue-i18n'; // Import useI18n
+
+const { t } = useI18n(); // Destructure t from useI18n
 import ko from 'element-plus/dist/locale/ko.mjs';
 import { Search, Delete } from '@element-plus/icons-vue';
-import { useI18n } from 'vue-i18n';
-
-const { t } = useI18n();
 
 const { message } = useAlarm();
 
@@ -489,15 +489,15 @@ const search = async value => {
 				});
 				totalCount.value = res.totalEvents;
 
-				message.success('이벤트 호출 완료');
+				message.success(t('event_retrieval_complete'));
 			} else {
-				message.warning('이벤트 없음');
+				message.warning(t('no_events_found'));
 				totalCount.value = 0;
 			}
 		})
 		.catch(err => {
 			searchLoading.value = false;
-			message.error('이벤트 검색 오류');
+			message.error(t('event_search_error'));
 		});
 };
 
@@ -569,10 +569,10 @@ const moveEvent = value => {
 	currentEventIdx.value += value;
 
 	if (currentEventIdx.value < 0) {
-		message.warning('첫번째 이벤트입니다');
+		message.warning(t('first_event'));
 		currentEventIdx.value -= value;
 	} else if (eventList.value.length - 1 < currentEventIdx.value) {
-		message.warning('마지막 이벤트입니다');
+		message.warning(t('last_event'));
 		currentEventIdx.value -= value;
 	} else {
 		openDetailModal(
@@ -594,13 +594,13 @@ const saveFilter = type => {
 		})
 		.then(res => {
 			if (res.status === 200) {
-				message.success('필터가 등록되었습니다.');
+				message.success(t('filter_registered'));
 			} else {
-				message.warning('필터 등록에 오류가 발생하였습니다.');
+				message.warning(t('filter_registration_error'));
 			}
 		})
 		.catch(err => {
-			message.error('필터 등록에 실패하였습니다.');
+			message.error(t('filter_registration_failed'));
 		});
 };
 const openInputSmokeTypeModal = () => {

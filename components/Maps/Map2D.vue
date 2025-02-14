@@ -3,7 +3,7 @@
 		<div :id="`map2d${mode}`" class="h-full"></div>
 		<el-dialog
 			v-model="dialogVisible"
-			title="동일 위치 카메라 목록"
+			:title="t('cameras_at_same_location')"
 			width="550"
 			:close-on-click-modal="false"
 		>
@@ -18,7 +18,7 @@
 							size="small"
 							@click="selectCamera(props)"
 						>
-							선택
+							{{ t('select') }}
 						</el-button>
 						<el-button
 							v-if="!l2Login"
@@ -37,8 +37,9 @@
 </template>
 
 <script setup>
-import { useI18n } from 'vue-i18n';
-const { t } = useI18n();
+import { useI18n } from 'vue-i18n'; // Import useI18n
+
+const { t } = useI18n(); // Destructure t from useI18n
 const { message } = useAlarm();
 
 const props = defineProps([
@@ -209,7 +210,7 @@ const initializeMap = () => {
 			mapObjectMap.value[props.mode].drawing();
 		}
 	} else {
-		message.error('지도 호출 실패');
+		message.error(t('map_retrieval_failed'));
 	}
 };
 
@@ -555,11 +556,11 @@ const setCenterZoom = () => {
 		},
 	})
 		.then(res => {
-			message.success('지도 중심점 저장 완료');
+			message.success(t('map_central_point_saved'));
 			location.href = location.href;
 		})
 		.catch(err => {
-			message.error('지도 중심점 저장 실패');
+			message.error(t('map_central_point_save_failed'));
 		});
 };
 

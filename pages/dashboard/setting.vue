@@ -56,9 +56,9 @@
 					<el-popconfirm
 						width="220"
 						confirm-button-text="삭제"
-						cancel-button-text="취소"
+						cancel-button-text="{{ t('cancel') }}"
 						:icon="WarnTriangleFilled"
-						title="정말 삭제하시겠습니까?"
+						:title="t('confirm_delete')"
 						@confirm="deleteUser(user)"
 					>
 						<template #reference>
@@ -100,7 +100,7 @@
 							type="primary"
 							@click="fetchDuplicateCheck()"
 							:disabled="duplicateFlag"
-							>ID 중복 검사</el-button
+							>{{ t('check_duplicate_id') }}</el-button
 						>
 					</el-form-item>
 					<el-form-item label="비밀번호" prop="pw">
@@ -118,7 +118,7 @@
 					<el-form-item label="도/특별시/광역시" prop="l1">
 						<el-select
 							v-model="ruleForm.l1"
-							placeholder="도/특별시/광역시 선택"
+							:placeholder="t('select_province')"
 						>
 							<el-option
 								v-for="l1 in l1List"
@@ -128,11 +128,11 @@
 							></el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="시/군/구" prop="l2">
+					<el-form-item :label="t('city_county_district')" prop="l2">
 						<el-select
 							:disabled="ruleForm.l1 === ''"
 							v-model="ruleForm.l2"
-							placeholder="시/군/구 선택"
+							:placeholder="t('select_city')"
 						>
 							<el-option
 								v-for="l2 in l2List"
@@ -166,10 +166,12 @@
 	</el-dialog>
 </template>
 <script setup>
+import { useI18n } from 'vue-i18n'; // Import useI18n
+
+const { t } = useI18n(); // Destructure t from useI18n
 import { Plus, WarnTriangleFilled } from '@element-plus/icons-vue';
 import cryptojs from 'crypto-js';
-import { useI18n } from 'vue-i18n';
-const { t } = useI18n();
+
 const isL2Login = ref(false);
 const siteName = ref(null);
 
@@ -199,11 +201,11 @@ const getUserList = () => {
 			method: 'GET',
 		})
 		.then(res => {
-			message.success('사용자 호출 완료');
+			message.success(t('user_info_retrieval_complete'));
 			userList.value = res._data;
 		})
 		.catch(err => {
-			message.error('사용자 호출 실패');
+			message.error(t('user_info_retrieval_failed'));
 		});
 };
 getUserList();
@@ -256,26 +258,38 @@ watch(
 
 const rules = reactive({
 	id: [
-		{ required: true, message: '아이디를 입력해주세요.', trigger: 'blur' },
+		{ required: true, message: t('input_id'), trigger: 'blur' },
 		{
 			pattern: /^[a-zA-Z]{1}[a-zA-Z0-9_]+$/,
-			message: '영어로 시작해야 하며 숫자, 언더스코어(_)만 포함 가능합니다.',
+			message: t('must_start_with_letter'),
 		},
-		{ min: 4, message: `${t('input_more_than_4')}`, trigger: 'blur' },
+		{
+			min: 4,
+			message: t('input_more_than_4'),
+			trigger: 'blur',
+		},
 	],
-	name: [{ required: true, message: '이름을 입력해주세요.', trigger: 'blur' }],
+	name: [{ required: true, message: t('input_name'), trigger: 'blur' }],
 	pw: [
-		{ required: true, message: '비밀번호를 입력해주세요.', trigger: 'blur' },
+		{
+			required: true,
+			message: t('input_password'),
+			trigger: 'blur',
+		},
 		{
 			pattern: /^(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/,
-			message: '숫자, 영문자, 특수문자를 각각 최소 한 개 이상 포함해야 합니다.',
+			message: t('must_include_characters'),
 		},
-		{ min: 9, message: `${t('input_more_than_9')}`, trigger: 'blur' },
+		{
+			min: 9,
+			message: t('input_more_than_9'),
+			trigger: 'blur',
+		},
 	],
 	checkPw: [
 		{
 			required: true,
-			message: '비밀번호 확인을 입력해주세요.',
+			message: t('confirm_password'),
 			trigger: 'blur',
 		},
 		{
@@ -303,13 +317,11 @@ const rules = reactive({
 	l1: [
 		{
 			required: true,
-			message: '도/특별시/광역시를 입력해주세요',
+			message: t('input_province'),
 			trigger: 'change',
 		},
 	],
-	l2: [
-		{ required: true, message: '시/군/구를 입력해주세요.', trigger: 'change' },
-	],
+	l2: [{ required: true, message: t('input_city'), trigger: 'change' }],
 });
 
 const submitForm = async formEl => {
@@ -384,11 +396,11 @@ const fetchSignUp = () => {
 		})
 		.then(res => {
 			dialogVisible.value = false;
-			message.success('사용자 생성 완료');
+			message.success(t('user_creation_complete'));
 			getUserList();
 		})
 		.catch(err => {
-			message.error('사용자 생성 실패');
+			message.error(t('user_creation_failed'));
 		});
 };
 
@@ -403,14 +415,14 @@ const fetchDuplicateCheck = () => {
 				},
 			})
 			.then(res => {
-				message.success('중복 검사 완료');
+				message.success(t('duplicate_check_complete'));
 				duplicateFlag.value = true;
 			})
 			.catch(err => {
-				message.error('중복된 아이디가 존재합니다.');
+				message.error(t('duplicate_id_exists'));
 			});
 	} else {
-		message.error('아이디 입력 후 중복 검사를 진행해주세요.');
+		message.error(t('check_duplicate_id'));
 	}
 };
 
@@ -422,12 +434,12 @@ const deleteUser = user => {
 		})
 		.then(res => {
 			console.log(res);
-			message.success('사용자 삭제 완료');
+			message.success(t('user_deletion_complete'));
 			getUserList();
 		})
 		.catch(err => {
 			console.log(err);
-			message.error('사용자 삭제 실패');
+			message.error(t('user_deletion_failed'));
 		});
 };
 
@@ -450,12 +462,12 @@ const updateUser = () => {
 		})
 		.then(res => {
 			console.log(res);
-			message.success('사용자 수정 완료');
+			message.success(t('user_modification_complete'));
 			getUserList();
 		})
 		.catch(err => {
 			console.log(err);
-			message.error('사용자 수정 실패');
+			message.error(t('user_modification_failed'));
 		});
 };
 </script>

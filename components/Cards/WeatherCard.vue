@@ -52,6 +52,9 @@
 	</div>
 </template>
 <script setup>
+import { useI18n } from 'vue-i18n'; // Import useI18n
+
+const { t } = useI18n(); // Destructure t from useI18n
 import icon01 from '@/assets/svgs/weather-icon01.svg';
 import icon02 from '@/assets/svgs/weather-icon02.svg';
 import icon03 from '@/assets/svgs/weather-icon03.svg';
@@ -103,42 +106,42 @@ const iconList = ref([
 	{
 		inactive: icon01,
 		active: icon01A,
-		name: '풍향',
+		name: t('wind_direction'),
 		key: 'VEC',
 		sign: 'deg',
 	},
 	{
 		inactive: icon02,
 		active: icon02A,
-		name: '풍속',
+		name: t('wind_speed'),
 		key: 'WSD',
 		sign: 'm/s',
 	},
 	{
 		inactive: icon03,
 		active: icon03A,
-		name: '기온', // 사이트 별 동적 처리
+		name: t('temperature'), // 사이트 별 동적 처리
 		key: 'T1H',
 		sign: '℃',
 	},
 	{
 		inactive: icon04,
 		active: icon04A,
-		name: '습도',
+		name: t('humidity'),
 		key: 'REH',
 		sign: '%',
 	},
 	{
 		inactive: icon05,
 		active: icon05A,
-		name: '강수형태',
+		name: t('precipitation_type'),
 		key: 'PTY',
 		sign: '',
 	},
 	{
 		inactive: icon06,
 		active: icon06A,
-		name: '강수량',
+		name: t('precipitation_amount'),
 		key: 'RN1',
 		sign: 'mm',
 	},

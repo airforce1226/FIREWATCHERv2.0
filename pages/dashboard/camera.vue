@@ -25,7 +25,7 @@
 			/>
 		</div>
 		<el-divider content-position="left"
-			>CCTV 관리 ({{ cameraList.length || 0 }} 대)</el-divider
+			>{{ t('cctv_management') }} ({{ cameraList.length || 0 }} 대)</el-divider
 		>
 		<el-row :gutter="20" class="h-[calc(100%-78px)]">
 			<el-col :span="8" class="h-full">
@@ -33,7 +33,7 @@
 					<div class="flex justify-between mb-5">
 						<el-input
 							:prefix-icon="Search"
-							placeholder="CCTV 명으로 검색"
+							:placeholder="t('search_by_cctv_name')"
 							v-model="searchItem"
 							style="width: 300px"
 						/>
@@ -43,7 +43,7 @@
 									<el-popconfirm
 										width="200"
 										confirm-button-text="삭제"
-										cancel-button-text="취소"
+										cancel-button-text="{{ t('cancel') }}"
 										:icon="WarnTriangleFilled"
 										:title="t('confirm_delete')"
 										@confirm="deleteAllCamera()"
@@ -60,7 +60,7 @@
 									<el-popconfirm
 										width="250"
 										confirm-button-text="삭제"
-										cancel-button-text="취소"
+										cancel-button-text="{{ t('cancel') }}"
 										:icon="WarnTriangleFilled"
 										title="최초 등록을 진행 하시겠습니까?"
 										@confirm="initCameraSave()"
@@ -109,7 +109,7 @@
 								<el-popconfirm
 									width="300"
 									confirm-button-text="삭제"
-									cancel-button-text="취소"
+									cancel-button-text="{{ t('cancel') }}"
 									:icon="WarnTriangleFilled"
 									:title="t('confirm_delete')"
 									@confirm="deleteCamera(cctv)"
@@ -174,6 +174,9 @@
 	</div>
 </template>
 <script setup>
+import { useI18n } from 'vue-i18n'; // Import useI18n
+
+const { t } = useI18n(); // Destructure t from useI18n
 import {
 	Plus,
 	Search,
@@ -185,9 +188,6 @@ import {
 	DeleteFilled,
 	Bottom,
 } from '@element-plus/icons-vue';
-
-import { useI18n } from 'vue-i18n';
-const { t } = useI18n();
 
 const router = useRouter();
 const { message } = useAlarm();
@@ -360,7 +360,7 @@ const test = () => {
 	})
 		.then(res => {
 			if (temp === TEMP_CAMERA1.length - 1) {
-				message.success(`카메라 초기화 완료.`);
+				message.success(t('camera_reset_complete'));
 				fetchCCTVList();
 			} else {
 				temp++;
@@ -396,7 +396,7 @@ const getCenterZoom = () => {
 				}
 				message.success(t('map_central_point_retrieval_complete'));
 			} else if (res.status === 204) {
-				message.warning('등록된 중심점이 없습니다.');
+				message.warning(t('no_registered_central_point'));
 			}
 		})
 		.catch(err => {

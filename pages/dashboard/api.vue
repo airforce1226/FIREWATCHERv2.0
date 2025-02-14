@@ -30,7 +30,7 @@
 								<el-select
 									class="ml-2"
 									v-model="form.l2"
-									placeholder="시/군/구 선택"
+									:placeholder="t('select_city')"
 									style="width: 150px"
 								>
 									<el-option />
@@ -38,7 +38,7 @@
 								<el-select
 									class="ml-2"
 									v-model="form.l3"
-									placeholder="읍/면/동 선택"
+									:placeholder="t('select_town')"
 									style="width: 150px"
 								>
 									<el-option />

@@ -25,27 +25,29 @@
 		<el-divider content-position="left">이벤트 필터 관리</el-divider>
 		<div class="card p-6 flex justify-around">
 			<div>
-				<span class="inline-block mr-2.5"> 시/군/구 </span>
+				<span class="inline-block mr-2.5">{{ t('city_county_district') }}</span>
 				<el-select
 					v-model="l2"
-					placeholder="시/군/구 선택"
+					:placeholder="t('select_city')"
 					style="width: 150px"
 				>
 					<el-option v-for="l2 in l2List" :key="l2" :label="l2" :value="l2" />
 				</el-select>
 			</div>
 			<div>
-				<span class="inline-block mr-2.5"> 읍/면/동 </span>
+				<span class="inline-block mr-2.5">
+					{{ t('town_village_neighborhood') }}
+				</span>
 				<el-select
 					v-model="l3"
-					placeholder="읍/면/동 선택"
+					:placeholder="t('select_town')"
 					style="width: 150px"
 				>
 					<el-option v-for="l3 in l3List" :key="l3" :label="l3" :value="l3" />
 				</el-select>
 			</div>
 			<div>
-				<span class="inline-block mr-2.5"> 카메라 명 </span>
+				<span class="inline-block mr-2.5"> {{ t('camera_name') }} </span>
 				<el-select
 					v-model="cameraName"
 					placeholder="카메라 명 선택"
@@ -59,7 +61,7 @@
 				</el-select>
 			</div>
 			<!-- <div>
-				<span class="inline-block mr-2.5"> 탐지 분류 </span>
+				<span class="inline-block mr-2.5"> t('detection_classification') </span>
 				<el-select
 					v-model="classItem"
 					placeholder="타입을 선택해 주세요"
@@ -74,7 +76,7 @@
 				</el-select>
 			</div>
 			<div>
-				<span class="inline-block mr-2.5"> 날짜 </span>
+				<span class="inline-block mr-2.5"> t('date')</span>
 				<el-config-provider :locale="ko">
 					<el-date-picker
 						v-model="date"
@@ -103,13 +105,15 @@
 					</el-date-picker>
 				</el-config-provider>
 			</div> -->
-			<el-button type="primary" :icon="Search" @click="search">검색</el-button>
+			<el-button type="primary" :icon="Search" @click="search">{{
+				t('search')
+			}}</el-button>
 		</div>
 		<div class="mt-5" style="height: 80%">
 			<div class="flex justify-start mb-2.5">
 				<img src="assets/svgs/eventList_event.svg" class="mr-2" />
 				<em class="card-title mb-0 text-base">
-					이벤트 개수 : {{ totalCount.toLocaleString() }}개
+					{{ t('number_of_events') }} : {{ totalCount.toLocaleString() }}개
 				</em>
 			</div>
 			<div v-if="eventList.length > 0">
@@ -198,6 +202,9 @@
 	</div>
 </template>
 <script setup>
+import { useI18n } from 'vue-i18n'; // Import useI18n
+
+const { t } = useI18n(); // Destructure t from useI18n
 import { Search, Delete } from '@element-plus/icons-vue';
 import ko from 'element-plus/dist/locale/ko.mjs';
 
@@ -441,27 +448,27 @@ const search = () => {
 				if (res._data.events.length > 0) {
 					eventList.value = res._data.events;
 					console.log(res._data);
-					message.success('이벤트 필터 호출 완료');
+					message.success(t('event_filter_retrieval_complete'));
 					eventList.value.forEach(ele => {
 						ele.loading = false;
 					});
 					totalCount.value = res._data.totalEvents;
 				}
 			} else {
-				message.warning('이벤트 필터 없음');
+				message.warning(t('no_event_filters_found'));
 			}
 		})
 		.catch(err => {
 			console.log(err);
 			eventList.value = [];
 			searchLoading.value = false;
-			message.error('이벤트 필터 검색 오류');
+			message.error(t('event_filter_search_error'));
 		});
 	searchLoading.value = false;
 };
 
 const addEvent = () => {
-	message.success('새로운 이벤트 필터가 등록 되었습니다.');
+	message.success(t('new_event_filter_registered'));
 };
 
 const deleteEvent = event => {
@@ -474,7 +481,7 @@ const deleteEvent = event => {
 			search();
 		})
 		.catch(err => {
-			message.error('이벤트 필터 삭제 오류');
+			message.error(t('event_filter_deletion_error'));
 		});
 };
 

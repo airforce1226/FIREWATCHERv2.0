@@ -30,7 +30,7 @@
 				<el-popconfirm
 					width="250"
 					confirm-button-text="재시작"
-					cancel-button-text="취소"
+					cancel-button-text="{{ t('cancel') }}"
 					:icon="WarnTriangleFilled"
 					title="시스템을 재시작하시겠습니까?"
 					@confirm="callRestart()"
@@ -41,7 +41,9 @@
 				</el-popconfirm>
 			</div>
 		</div>
-		<el-divider content-position="left">감지구역 설정</el-divider>
+		<el-divider content-position="left">{{
+			t('configure_detection_zone')
+		}}</el-divider>
 		<el-row :gutter="20" style="height: calc(100% - 89px)">
 			<el-col :span="12" class="h-full">
 				<div class="card h-full">
@@ -55,7 +57,7 @@
 								<el-icon color="#AB3D23" class="mr-2.5"><InfoFilled /></el-icon>
 							</el-tooltip>
 							<em class="card-title mb-0 text-base"
-								>탐지 구역 설정
+								>{{ t('set_detection_zone') }}
 								{{
 									selectedCamera.cctv_name
 										? `- ${selectedCamera.cctv_name}`
@@ -68,12 +70,12 @@
 							<el-button
 								:disabled="!(thumbnailImage && isSelectCenterMarker)"
 								@click="getGridIndexList = []"
-								>탐지구역 전체 해제</el-button
+								>{{ t('deselect_all_detection_zones') }}</el-button
 							>
 							<el-button
 								:disabled="!(thumbnailImage && isSelectCenterMarker)"
 								@click="setGrid()"
-								>탐지구역 확정</el-button
+								>{{ t('confirm_detection_zones') }}</el-button
 							>
 						</div>
 					</div>
@@ -97,12 +99,12 @@
 						>
 							<el-table-column
 								prop="location_name"
-								label="위치 명"
+								:label="t('location_name')"
 								align="center"
 							/>
 							<el-table-column
 								prop="grid_info.length"
-								label="구역 개수"
+								:label="t('number_of_zones')"
 								align="center"
 							/>
 						</el-table>
@@ -121,7 +123,7 @@
 								<el-icon color="#AB3D23" class="mr-2.5"><InfoFilled /></el-icon>
 							</el-tooltip>
 							<em class="card-title mb-0 text-base">
-								지도 설정
+								{{ t('map_configuration') }}
 								{{
 									selectedCamera.cctv_name
 										? `- ${selectedCamera.cctv_name}`
@@ -143,7 +145,7 @@
 							<el-button
 								@click="moveCameraView(cameraView)"
 								:disabled="!(mapCenter.length > 0)"
-								>저장된 카메라 화각 이동</el-button
+								>{{ t('move_to_saved_camera_fov') }}</el-button
 							>
 							<!-- <el-button @click="moveCenterView()"
 								>중심 지점으로 이동</el-button
@@ -187,7 +189,7 @@
 						<el-table :data="polygonList" height="100%" show-overflow-tooltip>
 							<el-table-column
 								prop="location_name"
-								label="위치 명"
+								:label="t('location_name')"
 								align="center"
 							/>
 							<el-table-column
@@ -202,7 +204,7 @@
 							/>
 							<el-table-column
 								fixed="right"
-								label="관리"
+								:label="t('management')"
 								width="160"
 								align="center"
 							>
@@ -222,9 +224,9 @@
 									<el-popconfirm
 										width="200"
 										confirm-button-text="삭제"
-										cancel-button-text="취소"
+										cancel-button-text="{{ t('cancel') }}"
 										:icon="WarnTriangleFilled"
-										title="정말 삭제하시겠습니까?"
+										:title="t('confirm_delete')"
 										@confirm="removeSelectedPolygon(scope.row)"
 									>
 										<template #reference>
@@ -237,25 +239,27 @@
 					</div>
 					<div class="flex mt-5 justify-end">
 						<div>
-							<el-button size="large" @click="createMapMarker()"
-								>구역 그리기</el-button
-							>
+							<el-button size="large" @click="createMapMarker()">{{
+								t('draw_zone')
+							}}</el-button>
 
-							<el-button size="large" @click="setArea()">구역 확정</el-button>
+							<el-button size="large" @click="setArea()">{{
+								t('confirm_zone')
+							}}</el-button>
 
-							<el-button size="large" @click="removeLastMarker()"
-								>최근 마커 지우기</el-button
-							>
+							<el-button size="large" @click="removeLastMarker()">{{
+								t('clear_recent_marker')
+							}}</el-button>
 
-							<el-button size="large" @click="removeMarker()"
-								>현재 마커 초기화</el-button
-							>
+							<el-button size="large" @click="removeMarker()">{{
+								t('reset_current_marker')
+							}}</el-button>
 							<el-button
 								class="ml-2.5"
 								type="primary"
 								@click="toggleMarkerGroup()"
 							>
-								{{ markersVisible ? '마커 숨기기' : '마커 보이기' }}
+								{{ markersVisible ? t('hide_markers') : '마커 보이기' }}
 							</el-button>
 						</div>
 					</div>
@@ -325,7 +329,7 @@
 							size="small"
 							@click="selectCamera(props.row, true)"
 						>
-							선택
+							{{ t('select') }}
 						</el-button>
 					</template>
 				</el-table-column>
@@ -352,7 +356,12 @@
 						</div>
 					</template>
 				</el-table-column>
-				<el-table-column fixed="right" label="관리" width="160" align="center">
+				<el-table-column
+					fixed="right"
+					:label="t('management')"
+					width="160"
+					align="center"
+				>
 					<template #default="props">
 						<el-button
 							link
@@ -361,7 +370,7 @@
 							@click="selectPreset(props.row)"
 							:disabled="!props.row.hasThumbnail || imageLoading"
 						>
-							선택
+							{{ t('select') }}
 						</el-button>
 					</template>
 				</el-table-column>
@@ -370,6 +379,9 @@
 	</div>
 </template>
 <script setup>
+import { useI18n } from 'vue-i18n'; // Import useI18n
+
+const { t } = useI18n(); // Destructure t from useI18n
 import {
 	InfoFilled,
 	EditPen,
@@ -379,8 +391,6 @@ import {
 	ArrowLeftBold,
 } from '@element-plus/icons-vue';
 import { useHead } from '#app';
-import { useI18n } from 'vue-i18n';
-const { t } = useI18n();
 
 const { message } = useAlarm();
 const router = useRouter();
@@ -448,7 +458,7 @@ const detectionAreaRead = () => {
 						);
 					});
 				} else {
-					message.warning('설정 구역 호출 불가');
+					message.warning(t('unable_to_retrieve_zones'));
 				}
 			}
 		})
@@ -471,7 +481,7 @@ const callCCTV = async () => {
 
 				modalFlag.value = true;
 			} else {
-				message.warning('카메라 리스트 없음');
+				message.warning(t('no_camera_list_found'));
 			}
 		})
 		.catch(err => {
@@ -556,7 +566,7 @@ const initDetectionArea = (item, viewSet, presetName) => {
 		.catch(err => {
 			console.log(err);
 			selectCameraName.value = null;
-			message.error('CCTV가 연결되지 않았습니다.', `${err}`);
+			message.error(t('cctv_not_connected'), `${err}`);
 		});
 };
 
@@ -615,12 +625,12 @@ const removeSelectedPolygon = item => {
 		})
 		.then(res => {
 			if (res.status === 200) {
-				message.success('구역 삭제 완료');
+				message.success(t('zone_deletion_complete'));
 				drawingPolygonAndCenterMarker();
 			}
 		})
 		.catch(err => {
-			message.error('구역 삭제 오류');
+			message.error(t('zone_deletion_error'));
 		});
 };
 
@@ -635,7 +645,7 @@ const moveCameraView = res => {
 	const { mapConfigInfo, cctv_location } = res._data;
 
 	if (!mapConfigInfo) {
-		message.warning('카메라 화각 정보 없음');
+		message.warning(t('no_camera_fov_info'));
 	}
 	mapCenter.value = mapConfigInfo
 		? [parseFloat(mapConfigInfo.longitude), parseFloat(mapConfigInfo.latitude)]
@@ -684,7 +694,7 @@ const initCameraView = () => {
 		})
 		.then(res => {
 			if (res.status === 200) {
-				message.success('화각 초기화 완료');
+				message.success(t('fov_reset_complete'));
 				initDetectionArea(selectedCamera.value, true);
 			}
 		})
@@ -736,7 +746,7 @@ const setGrid = item => {
 			isSelectCenterMarker.value = null;
 		})
 		.catch(err => {
-			message.error('탐지 구역 설정 오류');
+			message.error(t('detection_zone_setting_error'));
 		});
 };
 
@@ -758,12 +768,12 @@ const getGrid = _id => {
 					let item = res._data.find(item => item.map3d_info === _id);
 					if (item) {
 						getGridIndexList.value = item.grid_info;
-						message.success('탐지 구역 호출 완료');
+						message.success(t('detection_zone_retrieval_complete'));
 					} else {
-						message.warning('선택된 탐지 구역 없음');
+						message.warning(t('no_detection_zone_selected'));
 					}
 				} else {
-					message.warning('선택된 탐지 구역 없음');
+					message.warning(t('no_detection_zone_selected'));
 				}
 				isSelectCenterMarker.value = true;
 			})
@@ -771,7 +781,7 @@ const getGrid = _id => {
 				message.error('탐지 구역 호출 오류');
 			});
 	} else {
-		message.warning('카메라 선택 후 탐지 구역 설정');
+		message.warning(t('configure_detection_zones'));
 	}
 };
 
@@ -833,9 +843,8 @@ const loadImage = () => {
 			imageLoading.value = false;
 		})
 		.catch(err => {
-			console.log(err);
 			imageLoading.value = false;
-			message.warning('카메라 응답 없음');
+			message.warning(t('no_response_from_camera'));
 		});
 };
 

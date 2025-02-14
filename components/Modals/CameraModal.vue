@@ -10,18 +10,21 @@
 						class="ml-2.5"
 						:disabled="isCheckedDuplicate_rtsp || form.rtsp === ''"
 					>
-						RTSP 중복 검사
+						{{ t('rtsp_duplicate_check') }}
 					</el-button>
 				</div>
 			</el-form-item>
 			<el-form-item label="CCTV ID" prop="id">
 				<el-input v-model="form.id" />
 			</el-form-item>
-			<el-form-item label="카메라 명" prop="name">
+			<el-form-item :label="t('camera_name')" prop="name">
 				<el-input v-model="form.name" />
 			</el-form-item>
-			<el-form-item label="분석서버" prop="inferenceID">
-				<el-select v-model="form.inferenceID" placeholder="분석서버 선택">
+			<el-form-item :label="t('analysis_server')" prop="inferenceID">
+				<el-select
+					v-model="form.inferenceID"
+					:placeholder="t('select_analysis_server')"
+				>
 					<el-option
 						v-for="server in serverList"
 						:key="server.id"
@@ -59,13 +62,13 @@
 				<el-input v-model="form.latitude" />
 			</el-form-item>
 			<el-form-item class="align-buttons__dialog">
-				<el-button @click="modal = false">취소</el-button>
+				<el-button @click="modal = false">{{ t('cancel') }}</el-button>
 				<el-button
 					v-if="createMode"
 					type="primary"
 					@click="submitForm(formRef)"
 				>
-					등록하기
+					{{ t('register') }}
 				</el-button>
 				<el-button v-else type="primary" @click="submitForm(formRef)">
 					수정하기
@@ -76,8 +79,9 @@
 </template>
 
 <script setup>
-import { useI18n } from 'vue-i18n';
-const { t } = useI18n();
+import { useI18n } from 'vue-i18n'; // Import useI18n
+
+const { t } = useI18n(); // Destructure t from useI18n
 const modal = defineModel();
 const props = defineProps([
 	'title',
@@ -148,30 +152,50 @@ const L3List = ref([]);
 
 const rules = ref({
 	rtsp: [
-		{ required: true, message: 'RTSP URL을 입력해 주세요', trigger: 'blur' },
+		{
+			required: true,
+			message: t('input_rtsp_url'),
+			trigger: 'blur',
+		},
 	],
-	id: [{ required: true, message: 'CCTV ID를 입력해 주세요', trigger: 'blur' }],
+	id: [{ required: true, message: t('input_cctv_id'), trigger: 'blur' }],
 	name: [
-		{ required: true, message: '카메라 명을 입력해 주세요', trigger: 'blur' },
+		{
+			required: true,
+			message: t('input_camera_name'),
+			trigger: 'blur',
+		},
 	],
 	inferenceID: [
-		{ required: true, message: '분석 서버를 선택해 주세요', trigger: 'change' },
+		{
+			required: true,
+			message: t('select_analysis_server'),
+			trigger: 'change',
+		},
 	],
 
 	l1: [
 		{
 			required: true,
-			message: '도/특별시/광역시 선택',
+			message: t('select_province'),
 			trigger: 'change',
 		},
 	],
-	l2: [{ required: true, message: '시/군/구 선택', trigger: 'change' }],
-	l3: [{ required: true, message: '읍/면/동 선택', trigger: 'change' }],
+	l2: [{ required: true, message: t('select_city'), trigger: 'change' }],
+	l3: [{ required: true, message: t('select_town'), trigger: 'change' }],
 	longitude: [
-		{ required: true, message: '경도 값을 입력해 주세요', trigger: 'blur' },
+		{
+			required: true,
+			message: t('input_longitude'),
+			trigger: 'blur',
+		},
 	],
 	latitude: [
-		{ required: true, message: '위도 값을 입력해 주세요', trigger: 'blur' },
+		{
+			required: true,
+			message: t('input_latitude'),
+			trigger: 'blur',
+		},
 	],
 });
 
@@ -184,13 +208,13 @@ const checkDuplicateRTSP = async () => {
 				url: form.rtsp,
 			},
 		});
-		message.success('등록 가능한 RTSP URL 입니다.');
+		message.success(t('valid_rtsp_url'));
 		isCheckedDuplicate_rtsp.value = true;
 	} catch (error) {
 		if (error.response && error.response.status === 409) {
-			message.error('이미 등록된 RTSP URL 입니다.');
+			message.error(t('rtsp_url_already_registered'));
 		} else {
-			message.error('RTSP URL 체크 중 에러가 발생했습니다.');
+			message.error(t('rtsp_url_check_error'));
 		}
 	}
 };
@@ -309,7 +333,7 @@ const updateCamera = async () => {
 		message.success(`${form.name} 이(가) 수정 되었습니다.`);
 	} catch (error) {
 		console.log(error);
-		message.error(`${form.name} 수정 실패`);
+		message.error(`${form.name} ${t('update_failed')}`);
 	}
 };
 // 기존 카메라 업데이트

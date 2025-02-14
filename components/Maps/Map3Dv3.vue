@@ -2,7 +2,7 @@
 	<div>
 		<div id="map" class="w-full h-full"></div>
 		<el-dialog
-			title="위치 등록"
+			:title="t('register_location')"
 			v-model="polygonDialogFlag"
 			width="800"
 			align-center
@@ -13,23 +13,29 @@
 					class="mr-2"
 					v-model="location_name"
 					:autofocus="Boolean(true)"
-					placeholder="위치 명 입력"
+					:placeholder="t('input_location_name')"
 				/>
 				<el-button
 					:disabled="location_name === ''"
 					class="ml-2.5"
 					type="primary"
 					@click="addPolygon()"
-					>위치 명 중복 검사 및 등록</el-button
+					>{{ t('check_duplicate_location_name') }}</el-button
 				>
-				<el-button class="ml-2.5" type="primary" @click="cancelDrawingPolygon()"
-					>취소</el-button
+				<el-button
+					class="ml-2.5"
+					type="primary"
+					@click="cancelDrawingPolygon()"
+					>{{ t('cancel') }}</el-button
 				>
 			</div>
 		</el-dialog>
 	</div>
 </template>
 <script setup>
+import { useI18n } from 'vue-i18n'; // Import useI18n
+
+const { t } = useI18n(); // Destructure t from useI18n
 import markerImage_sm from '@/assets/markerPoint_sm.png';
 import centerPoint from '@/assets/centerPoint.png';
 
@@ -74,14 +80,14 @@ const getCenterZoom = () => {
 		.then(res => {
 			if (res.status === 200) {
 				initializeMap(res._data.center[0], res._data.center[1]);
-				message.success('지도 중심점 호출 완료');
+				message.success(t('map_central_point_retrieval_complete'));
 			} else {
-				message.warning('지도 중심점 등록 후 사용 바람.');
+				message.warning(t('register_central_point'));
 			}
 		})
 		.catch(err => {
 			console.log(err);
-			message.error('지도 중심점 호출 실패');
+			message.error(t('map_central_point_retrieval_failed'));
 		});
 };
 
@@ -122,8 +128,6 @@ const initializeMap = (x, y) => {
 	// mapController.Map3D.onMoveEnd.addEventListener(() => {
 	// 	console.log('test');
 	// });
-
-	console.log(mapObject.value);
 };
 
 // 지도 이동
@@ -253,7 +257,8 @@ const setCameraView = oid => {
 				},
 			})
 			.then(res => {
-				if (res.status === 200) message.success('화각 설정 완료');
+				if (res.status === 200)
+					message.success(t('fov_configuration_complete'));
 			})
 			.catch(err => {
 				console.log(err);
@@ -376,16 +381,16 @@ const addPolygon = () => {
 		.then(res => {
 			if (res.status === 200) {
 				polygonDialogFlag.value = false;
-				message.success('구역 등록 완료');
+				message.success(t('zone_registration_complete'));
 				location_name.value = '';
 				emit('drawingPolygonAndCenterMarker');
 			}
 		})
 		.catch(err => {
 			if (err.status === 409) {
-				message.warning('구역 명 중복');
+				message.warning(t('zone_name_duplicated'));
 			} else {
-				message.error('구역 등록 실패');
+				message.error(t('zone_registration_failed'));
 			}
 		});
 };

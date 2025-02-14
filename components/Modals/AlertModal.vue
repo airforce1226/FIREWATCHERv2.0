@@ -21,8 +21,9 @@
 	</div>
 </template>
 <script setup>
-import { useI18n } from 'vue-i18n';
-const { t } = useI18n();
+  import { useI18n } from 'vue-i18n'; // Import useI18n
+
+const { t } = useI18n(); // Destructure t from useI18n
 const modal = defineModel();
 const emit = defineEmits(['confirm']);
 const props = defineProps(['content', 'ok', 'cancel']);

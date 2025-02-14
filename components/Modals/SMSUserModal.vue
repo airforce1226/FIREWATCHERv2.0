@@ -22,20 +22,36 @@
 					maxlength="13"
 				/>
 			</el-form-item>
-
-			<el-form-item v-if="smsActive" label="관리자">
+			<el-form-item v-if="ip === '10.10.10.2'" label="관리소">
+				<el-select
+					v-model="form.managementOfficeAreas"
+					placeholder="관리소 선택"
+				>
+					<el-option
+						v-for="office in managementOfficeAreasList"
+						:key="office"
+						:value="office"
+					/>
+				</el-select>
+			</el-form-item>
+			<!-- 울진의 경우 로그인 시, smsActive 가 true 로 받아오고 있어 아래 라디오 버튼이 활성화 되고있음. 서버에서 false 값 보내주어야함 -->
+			<el-form-item v-if="smsActive" :label="t('administrator')">
 				<el-radio-group v-model="form.userType" class="ml-4">
-					<el-radio value="master" size="large">도청 관리자</el-radio>
+					<el-radio value="master" size="large">{{
+						t('administrator')
+					}}</el-radio>
 					<!-- 경상남도 창원용, 충청북도 청주용 지역 관리자 라디오 버튼 -->
-					<!-- <el-radio value="admin" size="large">지역 관리자</el-radio> -->
-					<el-radio value="user" size="large">지역 사용자</el-radio>
+					<!-- <el-radio value="admin" size="large">{{t('regional_admin')}}</el-radio> -->
+					<el-radio value="user" size="large">{{
+						t('regional_user')
+					}}</el-radio>
 				</el-radio-group>
 			</el-form-item>
 			<el-form-item
-				v-if="form.userType !== 'master'"
-				label="도/특별시/광역시 선택"
+				v-if="form.userType !== 'master' && ip !== '10.10.10.2'"
+				:label="t('select_province')"
 			>
-				<el-select v-model="form.l1" placeholder="도/특별시/광역시 선택">
+				<el-select v-model="form.l1" :placeholder="t('select_province')">
 					<el-option
 						v-for="l1 in l1List"
 						:key="l1"
@@ -44,8 +60,8 @@
 					></el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="시/군/구 선택" v-if="form.userType !== 'master'">
-				<el-select v-model="form.l2" placeholder="시/군/구 선택">
+			<el-form-item :label="t('select_city')" v-if="form.userType !== 'master'">
+				<el-select v-model="form.l2" :placeholder="t('select_city')">
 					<el-option
 						v-for="l2 in l2List"
 						:key="l2"
@@ -53,16 +69,20 @@
 						:value="l2"
 					></el-option> </el-select
 			></el-form-item>
-			<el-form-item label="야간 연기 알람 수신 여부">
+			<el-form-item :label="t('receive_nighttime_smoke_alarms')">
 				<el-radio-group v-model="form.night" class="ml-4">
-					<el-radio :value="false" size="large">수신 거부</el-radio>
-					<el-radio :value="true" size="large">수신</el-radio>
+					<el-radio :value="false" size="large">{{
+						t('refuse_to_receive')
+					}}</el-radio>
+					<el-radio :value="true" size="large">{{ t('receive') }}</el-radio>
 				</el-radio-group>
 			</el-form-item>
-			<el-form-item label="문자 알림 수신 여부">
+			<el-form-item :label="t('receive_sms_alerts')">
 				<el-radio-group v-model="form.sms" class="ml-4">
-					<el-radio :value="false" size="large">수신 거부</el-radio>
-					<el-radio :value="true" size="large">수신</el-radio>
+					<el-radio :value="false" size="large">{{
+						t('refuse_to_receive')
+					}}</el-radio>
+					<el-radio :value="true" size="large">{{ t('receive') }}</el-radio>
 				</el-radio-group>
 			</el-form-item>
 			<el-form-item class="align-buttons__dialog">
@@ -76,19 +96,19 @@
 							: false
 					"
 				>
-					{{ updateUserInfo ? '수정하기' : '등록하기' }}
+					{{ updateUserInfo ? '수정하기' : t('register') }}
 				</el-button>
 			</el-form-item>
 		</el-form>
 	</el-dialog>
 </template>
 <script setup>
-import { useI18n } from 'vue-i18n';
-const { t } = useI18n();
 const smsModal = defineModel();
 const props = defineProps(['title', 'updateUserInfo']);
 const emit = defineEmits(['fetchUsers']);
 const { message } = useAlarm();
+
+const ip = ref(IP);
 
 const closeModal = () => {
 	smsModal.value = false;
@@ -107,6 +127,7 @@ watchEffect(() => {
 			form.l1 = '';
 			form.l2 = '';
 			form.userType = 'master';
+			form.managementOfficeAreas = '';
 
 			console.log(props.updateUserInfo);
 			// Edit User
@@ -118,6 +139,7 @@ watchEffect(() => {
 				form.l1 = props.updateUserInfo.address.L1;
 				form.l2 = props.updateUserInfo.address.L2;
 				form.userType = props.updateUserInfo.address.userType;
+				form.managementOfficeAreas = props.updateUserInfo.managementOfficeAreas;
 			}
 
 			smsActive.value = JSON.parse(
@@ -125,9 +147,22 @@ watchEffect(() => {
 					? false
 					: sessionStorage.getItem('smsActive'),
 			);
+
+			if (ip.value === '10.10.10.2') {
+				smsActive.value = false;
+			}
 		});
 	}
 });
+
+const managementOfficeAreasList = ref([
+	'전체 관리자',
+	'영주관리소',
+	'영덕관리소',
+	'구미관리소',
+	'울진관리소',
+	'양산관리소',
+]);
 
 const formRef = ref('');
 const form = reactive({
@@ -138,6 +173,7 @@ const form = reactive({
 	userType: 'master',
 	l1: '',
 	l2: '',
+	managementOfficeAreas: '',
 });
 watch(
 	() => form.userType,
@@ -184,19 +220,37 @@ const handleChange = value => {
 
 const addSMSUser = async () => {
 	try {
-		await $fetch(`${BASE_URL}/sms/user/create`, {
-			method: 'POST',
-			body: {
+		let body = {
+			name: form.name,
+			phoneNumber: form.tel,
+			status: form.sms,
+			NighttimeReception: form.night,
+			address: {
+				L1: form.l1,
+				L2: form.l2,
+				userType: form.userType,
+			},
+		};
+
+		if (ip.value === '10.10.10.2') {
+			body = {
 				name: form.name,
 				phoneNumber: form.tel,
 				status: form.sms,
 				NighttimeReception: form.night,
+				managementOfficeAreas: form.managementOfficeAreas,
 				address: {
-					L1: form.l1,
-					L2: form.l2,
-					userType: form.userType,
+					L1: '',
+					L2: '',
+					userType:
+						form.managementOfficeAreas === '전체 관리자' ? 'master' : 'user',
 				},
-			},
+			};
+		}
+
+		await $fetch(`${BASE_URL}/sms/user/create`, {
+			method: 'POST',
+			body,
 		});
 		message.success(`${form.name} ${t('registered')}`);
 		emit('fetchUsers');
@@ -208,20 +262,36 @@ const addSMSUser = async () => {
 
 const updateSMSUser = async () => {
 	try {
-		await $fetch(`${BASE_URL}/sms/user/update`, {
-			method: 'POST',
-			body: {
-				_id: props.updateUserInfo._id,
+		let body = {
+			name: form.name,
+			phoneNumber: form.tel,
+			status: form.sms,
+			NighttimeReception: form.night,
+			address: {
+				L1: form.l1,
+				L2: form.l2,
+				userType: form.userType,
+			},
+		};
+
+		if (ip.value === '10.10.10.2') {
+			body = {
 				name: form.name,
 				phoneNumber: form.tel,
-				NighttimeReception: JSON.parse(form.night),
-				status: JSON.parse(form.sms),
+				status: form.sms,
+				NighttimeReception: form.night,
+				managementOfficeAreas: form.managementOfficeAreas,
 				address: {
 					L1: form.l1,
 					L2: form.l2,
-					userType: form.userType,
+					userType:
+						form.managementOfficeAreas === '전체 관리자' ? 'master' : 'user',
 				},
-			},
+			};
+		}
+		await $fetch(`${BASE_URL}/sms/user/update`, {
+			method: 'POST',
+			body,
 		});
 		message.success(`${props.updateUserInfo.name}이(가) 수정되었습니다`);
 		emit('fetchUsers');
